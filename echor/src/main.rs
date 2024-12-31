@@ -27,7 +27,7 @@ fn main() {
         .map(|s| s.to_string())
         .collect();
 
-    let omit_newline = matches.contains_id("omit_newline");
+    let omit_newline = matches.get_flag("omit_newline");
 
     let ending = if omit_newline { "" } else { "\n" };
     print!("{}{}", text.join(" "), ending);
