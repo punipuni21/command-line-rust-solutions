@@ -21,12 +21,17 @@ fn main() {
         .get_matches();
     println!("{:#?}", matches);
 
-    let text: Vec<&String> = matches.get_many::<String>("text").unwrap().collect();
+    let text: Vec<String> = matches
+        .get_many::<String>("text")
+        .unwrap()
+        .map(|s| s.to_string())
+        .collect();
+
     let omit_newline = matches.contains_id("omit_newline");
 
     let mut ending = "\n";
     if omit_newline {
         ending = "";
     }
-    print!("{}{}", text.concat(" "), ending);
+    print!("{}{}", text.join(" "), ending);
 }
