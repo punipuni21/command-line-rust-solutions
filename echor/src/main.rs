@@ -29,9 +29,6 @@ fn main() {
 
     let omit_newline = matches.contains_id("omit_newline");
 
-    let mut ending = "\n";
-    if omit_newline {
-        ending = "";
-    }
+    let ending = if omit_newline { "" } else { "\n" };
     print!("{}{}", text.join(" "), ending);
 }
