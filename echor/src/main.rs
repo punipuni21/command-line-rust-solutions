@@ -1,7 +1,7 @@
 use clap::{Arg, Command};
 
 fn main() {
-    let _matches = Command::new("echor")
+    let matches = Command::new("echor")
         .version("0.1.0")
         .author("ryo")
         .about("Rust echo")
@@ -19,5 +19,14 @@ fn main() {
                 .num_args(0),
         )
         .get_matches();
-    println!("{:#?}", _matches);
+    println!("{:#?}", matches);
+
+    let text: Vec<&String> = matches.get_many::<String>("text").unwrap().collect();
+    let omit_newline = matches.contains_id("omit_newline");
+
+    let mut ending = "\n";
+    if omit_newline {
+        ending = "";
+    }
+    print!("{}{}", text.concat(" "), ending);
 }
