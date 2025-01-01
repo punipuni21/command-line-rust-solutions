@@ -19,7 +19,6 @@ fn main() {
                 .num_args(0),
         )
         .get_matches();
-    println!("{:#?}", matches);
 
     let text: Vec<String> = matches
         .get_many::<String>("text")
