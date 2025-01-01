@@ -21,23 +21,22 @@ fn runs() -> TestResult {
 
 #[test]
 fn hello1() -> TestResult {
-    let expected = fs::read_to_string("tests/expected/hello1.txt").unwrap();
-    let mut cmd = Command::cargo_bin("echor")?;
-    cmd.arg("Hello there").assert().success().stdout(expected);
-
-    Ok(())
+    run(&["Hello there"], "tests/expected/hello1.txt")
 }
 
 #[test]
 fn hello2() -> TestResult {
-    let expected = fs::read_to_string("tests/expected/hello2.txt").unwrap();
-    let mut cmd = Command::cargo_bin("echor")?;
-    cmd.args(vec!["Hello", "there"])
-        .assert()
-        .success()
-        .stdout(expected);
+    run(&["Hello", "there"], "tests/expected/hello2.txt")
+}
 
-    Ok(())
+#[test]
+fn hello3() -> TestResult {
+    run(&["Hello  there", "-n"], "tests/expected/hello1.n.txt")
+}
+
+#[test]
+fn hello4() -> TestResult {
+    run(&["-n", "Hello", "there"], "tests/expected/hello2.n.txt")
 }
 
 fn run(args: &[&str], expected_file: &str) -> TestResult {
