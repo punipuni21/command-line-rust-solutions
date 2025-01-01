@@ -21,9 +21,8 @@ fn runs() -> TestResult {
 
 #[test]
 fn hello1() -> TestResult {
-    let outfile = "tests/expected/hello1.txt";
-    let expected = fs::read_to_string(outfile).unwrap();
-    let mut cmd = Command::cargo_bin("echor").unwrap();
+    let expected = fs::read_to_string("tests/expected/hello1.txt").unwrap();
+    let mut cmd = Command::cargo_bin("echor")?;
     cmd.arg("Hello there").assert().success().stdout(expected);
 
     Ok(())
@@ -31,9 +30,8 @@ fn hello1() -> TestResult {
 
 #[test]
 fn hello2() -> TestResult {
-    let outfile = "tests/expected/hello2.txt";
-    let expected = fs::read_to_string(outfile).unwrap();
-    let mut cmd = Command::cargo_bin("echor").unwrap();
+    let expected = fs::read_to_string("tests/expected/hello2.txt").unwrap();
+    let mut cmd = Command::cargo_bin("echor")?;
     cmd.args(vec!["Hello", "there"])
         .assert()
         .success()
