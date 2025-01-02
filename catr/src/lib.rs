@@ -1,4 +1,8 @@
-use std::error::Error;
+use std::{
+    error::Error,
+    fs::File,
+    io::{self, BufRead, BufReader},
+};
 
 use clap::{Arg, Command};
 
@@ -58,4 +62,11 @@ pub fn get_args() -> MyResult<Config> {
         number_lines: matches.get_flag("number_lines"),
         number_nonblank_lines: matches.get_flag("number_nonblank_lines"),
     })
+}
+
+fn open(filename: &str) -> MyResult<Box<dyn BufRead>> {
+    match filename {
+        "-" => Ok(Box::new(BufReader::new(io::stdin()))),
+        _ => Ok(Box::new(BufReader::new(File::open(filename)?))),
+    }
 }
