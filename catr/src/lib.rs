@@ -5,7 +5,9 @@ use clap::{Arg, Command};
 type MyResult<T> = Result<T, Box<dyn Error>>;
 
 pub fn run(config: Config) -> MyResult<()> {
-    dbg!(config);
+    for filename in config.files {
+        println!("{}", filename);
+    }
     Ok(())
 }
 
