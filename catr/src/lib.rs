@@ -25,7 +25,7 @@ pub fn get_args() -> MyResult<Config> {
             Arg::new("file")
                 .value_name("FILE")
                 .help("Input files")
-                .required(true)
+                .default_value("-")
                 .num_args(1..),
         )
         .arg(
