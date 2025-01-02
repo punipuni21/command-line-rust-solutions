@@ -13,9 +13,16 @@ pub fn run(config: Config) -> MyResult<()> {
         match open(&filename) {
             Err(err) => eprintln!("Failed to open {}: {}", filename, err),
             Ok(file) => {
+                let mut lineNumber = 0;
                 for line in file.lines() {
                     let line = line?;
-                    println!("{}", line);
+                    lineNumber += 1;
+
+                    if (config.number_lines) {
+                        println!("{} {}", lineNumber, line);
+                    } else {
+                        println!("{}", line);
+                    }
                 }
             }
         }
