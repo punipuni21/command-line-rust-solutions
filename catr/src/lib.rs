@@ -12,9 +12,13 @@ pub fn run(config: Config) -> MyResult<()> {
     for filename in config.files {
         match open(&filename) {
             Err(err) => eprintln!("Failed to open {}: {}", filename, err),
-            Ok(_) => println!("Opened {}", filename),
+            Ok(file) => {
+                for line in file.lines() {
+                    let line = line?;
+                    println!("{}", line);
+                }
+            }
         }
-        println!("{}", filename);
     }
     Ok(())
 }
