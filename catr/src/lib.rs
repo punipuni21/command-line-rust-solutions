@@ -18,17 +18,17 @@ pub fn run(config: Config) -> MyResult<()> {
                     let line = line?;
 
                     if config.number_lines {
-                        println!("{} {}", line_number + 1, line);
+                        println!("{:>6}\t{}", line_number + 1, line);
                         continue;
                     }
 
                     if config.number_nonblank_lines {
                         if line.is_empty() {
-                            println!("{}", line);
+                            println!();
                             continue;
                         }
 
-                        println!("{} {}", last_num + 1, line);
+                        println!("{:>6}\t{}", last_num + 1, line);
                         last_num += 1;
                         continue;
                     }
