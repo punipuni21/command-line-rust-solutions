@@ -71,7 +71,7 @@ pub fn get_args() -> MyResult<Config> {
         .arg(
             Arg::new("number_nonblank_lines")
                 .short('b')
-                .long("number_nonblank")
+                .long("number-nonblank")
                 .help("number nonempty output lines")
                 .num_args(0),
         )
