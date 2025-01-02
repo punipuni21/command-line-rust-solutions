@@ -13,16 +13,27 @@ pub fn run(config: Config) -> MyResult<()> {
         match open(&filename) {
             Err(err) => eprintln!("Failed to open {}: {}", filename, err),
             Ok(file) => {
-                let mut lineNumber = 0;
-                for line in file.lines() {
+                let mut last_num = 0;
+                for (line_number, line) in file.lines().enumerate() {
                     let line = line?;
-                    lineNumber += 1;
 
-                    if (config.number_lines) {
-                        println!("{} {}", lineNumber, line);
-                    } else {
-                        println!("{}", line);
+                    if config.number_lines {
+                        println!("{} {}", line_number + 1, line);
+                        continue;
                     }
+
+                    if config.number_nonblank_lines {
+                        if line.is_empty() {
+                            println!("{}", line);
+                            continue;
+                        }
+
+                        println!("{} {}", last_num + 1, line);
+                        last_num += 1;
+                        continue;
+                    }
+
+                    println!("{}", line);
                 }
             }
         }
