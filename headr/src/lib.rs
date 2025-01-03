@@ -1,4 +1,3 @@
-use anyhow::Ok;
 use clap::{Arg, Command};
 use std::error::Error;
 
@@ -21,15 +20,16 @@ pub fn get_args() -> MyResult<Config> {
                 .short('n')
                 .long("lines")
                 .value_name("LINES")
-                .help("Input lines")
-                .default_value("10")
-                .num_args(0),
+                .help("Number of lines")
+                .default_value("10"),
         )
         .arg(
             Arg::new("bytes")
                 .short('c')
                 .long("bytes")
-                .help("Input bytes")
+                .value_name("BYTES")
+                .help("Number of bytes")
+                .conflicts_with("lines")
                 .num_args(0),
         )
         .arg(
@@ -41,15 +41,27 @@ pub fn get_args() -> MyResult<Config> {
         )
         .get_matches();
 
-    let text: Vec<String> = matches
+    let files: Vec<String> = matches
         .get_many::<String>("lines")
         .unwrap()
         .map(|s| s.to_string())
         .collect();
 
+    let lines = matches
+        .get_one("bytes")
+        .map(parse_positive_int) //TODO implement parse_positive_int
+        .transpose()
+        .map_err(|e| format!("illegal line count -- {}", e))?;
+
+    let bytes = matches
+        .get_one("bytes")
+        .map(parse_positive_int) //TODO implement parse_positive_int
+        .transpose()
+        .map_err(|e| format!("illegal byte count -- {}", e))?;
+
     Ok(Config {
-        files: text,
-        lines: 10,
-        bytes: None,
+        files: files,
+        lines: lines.unwrap(),
+        bytes: bytes,
     })
 }
