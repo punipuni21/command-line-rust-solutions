@@ -55,10 +55,11 @@ pub fn get_args() -> MyResult<Config> {
 
     let lines = matches
         .get_one::<String>("lines")
-        .map(|s| s.as_str())
+        .map(|s| s.as_str()) //String->&str
         .map(parse_positive_int)
         .transpose()
         .map_err(|e| {
+            // 本とエラーメッセージが違うので注意
             format!(
                 "error: invalid value '{e}' for \
           '--lines <LINES>': invalid digit found in string"
@@ -66,11 +67,12 @@ pub fn get_args() -> MyResult<Config> {
         })?;
 
     let bytes = matches
-        .get_one::<String>("bytes")
-        .map(|s| s.as_str())
+        .get_one::<String>("bytes") //型は明示しないといけない
+        .map(|s| s.as_str()) //String->&str
         .map(parse_positive_int)
         .transpose()
         .map_err(|e| {
+            // 本とエラーメッセージが違うので注意
             format!(
                 "invalid value '{e}' for \
             '--bytes <BYTES>': invalid digit found in string"
