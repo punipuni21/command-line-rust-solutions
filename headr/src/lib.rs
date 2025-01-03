@@ -75,7 +75,10 @@ pub fn get_args() -> MyResult<Config> {
 }
 
 fn parse_positive_int(val: &str) -> MyResult<usize> {
-    unimplemented!();
+    match val.parse() {
+        Ok(n) if n > 0 => Ok(n),
+        _ => Err(val.into()),
+    }
 }
 
 #[test]
