@@ -36,7 +36,7 @@ pub fn get_args() -> MyResult<Config> {
                 .value_name("BYTES")
                 .help("Number of bytes")
                 .conflicts_with("lines")
-                .num_args(0),
+                .num_args(1),
         )
         .arg(
             Arg::new("files")
