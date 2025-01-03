@@ -39,7 +39,7 @@ pub fn get_args() -> MyResult<Config> {
                 .num_args(0),
         )
         .arg(
-            Arg::new("file")
+            Arg::new("files")
                 .value_name("FILE")
                 .help("Input files")
                 .default_value("-")
