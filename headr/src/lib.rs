@@ -56,16 +56,26 @@ pub fn get_args() -> MyResult<Config> {
     let lines = matches
         .get_one::<String>("lines")
         .map(|s| s.as_str())
-        .map(parse_positive_int) //TODO implement parse_positive_int
+        .map(parse_positive_int)
         .transpose()
-        .map_err(|e| format!("illegal line count -- {}", e))?;
+        .map_err(|e| {
+            format!(
+                "error: invalid value '{e}' for \
+          '--lines <LINES>': invalid digit found in string"
+            )
+        })?;
 
     let bytes = matches
         .get_one::<String>("bytes")
         .map(|s| s.as_str())
-        .map(parse_positive_int) //TODO implement parse_positive_int
+        .map(parse_positive_int)
         .transpose()
-        .map_err(|e| format!("illegal byte count -- {}", e))?;
+        .map_err(|e| {
+            format!(
+                "invalid value '{e}' for \
+            '--bytes <BYTES>': invalid digit found in string"
+            )
+        })?;
 
     Ok(Config {
         files: files,
