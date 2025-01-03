@@ -16,10 +16,6 @@ pub fn run(config: Config) -> MyResult<Config> {
     Ok(config)
 }
 
-fn parse_positive_int(val: &str) -> MyResult<usize> {
-    unimplemented!();
-}
-
 pub fn get_args() -> MyResult<Config> {
     let matches = Command::new("headr")
         .version("0.1.0")
@@ -59,12 +55,14 @@ pub fn get_args() -> MyResult<Config> {
 
     let lines = matches
         .get_one::<String>("lines")
+        .map(|s| s.as_str())
         .map(parse_positive_int) //TODO implement parse_positive_int
         .transpose()
         .map_err(|e| format!("illegal line count -- {}", e))?;
 
     let bytes = matches
         .get_one::<String>("bytes")
+        .map(|s| s.as_str())
         .map(parse_positive_int) //TODO implement parse_positive_int
         .transpose()
         .map_err(|e| format!("illegal byte count -- {}", e))?;
@@ -74,4 +72,23 @@ pub fn get_args() -> MyResult<Config> {
         lines: lines.unwrap(),
         bytes: bytes,
     })
+}
+
+fn parse_positive_int(val: &str) -> MyResult<usize> {
+    unimplemented!();
+}
+
+#[test]
+fn test_parse_positive_int() {
+    let res = parse_positive_int("3");
+    assert!(res.is_ok());
+    assert_eq!(res.unwrap(), 3);
+
+    let res = parse_positive_int("foo");
+    assert!(res.is_err());
+    assert_eq!(res.unwrap_err().to_string(), "foo".to_string());
+
+    let res = parse_positive_int("0");
+    assert!(res.is_err());
+    assert_eq!(res.unwrap_err().to_string(), "0".to_string())
 }
