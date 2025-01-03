@@ -80,9 +80,9 @@ pub fn get_args() -> MyResult<Config> {
         })?;
 
     Ok(Config {
-        files: files,
+        files,
         lines: lines.unwrap(),
-        bytes: bytes,
+        bytes,
     })
 }
 
