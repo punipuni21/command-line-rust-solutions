@@ -10,6 +10,16 @@ pub struct Config {
     bytes: Option<usize>,
 }
 
+pub fn run(config: Config) -> MyResult<Config> {
+    println!("{:#?}", config);
+
+    Ok(config)
+}
+
+fn parse_positive_int(val: &str) -> MyResult<usize> {
+    unimplemented!();
+}
+
 pub fn get_args() -> MyResult<Config> {
     let matches = Command::new("headr")
         .version("0.1.0")
@@ -42,19 +52,19 @@ pub fn get_args() -> MyResult<Config> {
         .get_matches();
 
     let files: Vec<String> = matches
-        .get_many::<String>("lines")
+        .get_many::<String>("files")
         .unwrap()
         .map(|s| s.to_string())
         .collect();
 
     let lines = matches
-        .get_one("bytes")
+        .get_one::<String>("lines")
         .map(parse_positive_int) //TODO implement parse_positive_int
         .transpose()
         .map_err(|e| format!("illegal line count -- {}", e))?;
 
     let bytes = matches
-        .get_one("bytes")
+        .get_one::<String>("bytes")
         .map(parse_positive_int) //TODO implement parse_positive_int
         .transpose()
         .map_err(|e| format!("illegal byte count -- {}", e))?;
