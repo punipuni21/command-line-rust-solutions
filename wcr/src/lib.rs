@@ -1,4 +1,7 @@
-type MyResult<T> = Result<T, Box<dyn std::error::Error>>;
+use clap::{Arg, Command};
+use std::error::Error;
+
+type MyResult<T> = Result<T, Box<dyn Error>>;
 
 #[derive(Debug)]
 pub struct Config {
