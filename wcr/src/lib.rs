@@ -1,4 +1,5 @@
 use clap::{Arg, Command};
+use core::num;
 use std::{
     error::Error,
     fs::File,
@@ -14,6 +15,28 @@ pub struct Config {
     words: bool,
     bytes: bool,
     chars: bool,
+}
+
+#[derive(Debug, PartialEq)]
+pub struct FileInfo {
+    num_lines: usize,
+    num_words: usize,
+    num_bytes: usize,
+    num_chars: usize,
+}
+
+pub fn count(mut file: impl BufRead) -> MyResult<FileInfo> {
+    let mut num_lines = 0;
+    let mut num_words = 0;
+    let mut num_bytes = 0;
+    let mut num_chars = 0;
+
+    Ok(FileInfo {
+        num_lines,
+        num_words,
+        num_bytes,
+        num_chars,
+    })
 }
 
 pub fn run(config: Config) -> MyResult<()> {
