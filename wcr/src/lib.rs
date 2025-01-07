@@ -67,8 +67,16 @@ pub fn run(config: Config) -> MyResult<()> {
             Ok(file) => {
                 if let Ok(info) = count(file) {
                     println!(
-                        "{:>8}{:>8}{:>8} {}",
-                        info.num_lines, info.num_words, info.num_bytes, filename
+                        "{}{}{}{}{}",
+                        format_field(info.num_lines, config.lines),
+                        format_field(info.num_words, config.words),
+                        format_field(info.num_bytes, config.bytes),
+                        format_field(info.num_chars, config.chars),
+                        if filename == "-" {
+                            "".to_string()
+                        } else {
+                            format!(" {}", &filename)
+                        }
                     );
                 }
             }
@@ -88,7 +96,7 @@ pub fn get_args() -> MyResult<Config> {
                 .long("lines")
                 .value_name("LINES")
                 .help("Show line count")
-                .default_value("true")
+                .default_value("false")
                 .num_args(0),
         )
         .arg(
@@ -97,7 +105,7 @@ pub fn get_args() -> MyResult<Config> {
                 .long("words")
                 .value_name("WORDS")
                 .help("Show word count")
-                .default_value("true")
+                .default_value("false")
                 .num_args(0),
         )
         .arg(
@@ -106,7 +114,7 @@ pub fn get_args() -> MyResult<Config> {
                 .long("bytes")
                 .value_name("BYTES")
                 .help("Show byte count")
-                .default_value("true")
+                .default_value("false")
                 .num_args(0),
         )
         .arg(
