@@ -57,13 +57,29 @@ pub fn get_args() -> MyResult<Config> {
 pub fn run(config: Config) -> MyResult<()> {
     let mut file = open(&config.in_file).map_err(|e| format!("{}: {}", config.in_file, e))?;
     let mut line = String::new();
+    let mut previous = String::new();
+    let mut count: u64 = 0;
+
     loop {
         let bytes = file.read_line(&mut line)?;
         if bytes == 0 {
             break;
         }
-        print!("{}", line);
+
+        if line.trim_end() != previous.trim_end() {
+            if count > 0 {
+                print!("{:>4} {}", count, previous);
+                previous = line.clone();
+                count = 0;
+            }
+        }
+
+        count += 1;
         line.clear();
+    }
+
+    if count > 0 {
+        print!("{:>4} {}", count, previous);
     }
     Ok(())
 }
