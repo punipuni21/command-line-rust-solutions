@@ -1,7 +1,8 @@
 use clap::{Arg, Command};
 use std::{
     error::Error,
-    io::{self, BufRead, BufReader},
+    fs::File,
+    io::{self, BufRead, BufReader, Write},
 };
 type MyResult<T> = Result<T, Box<dyn Error>>;
 
@@ -56,18 +57,23 @@ pub fn get_args() -> MyResult<Config> {
 
 pub fn run(config: Config) -> MyResult<()> {
     let mut file = open(&config.in_file).map_err(|e| format!("{}: {}", config.in_file, e))?;
+    let mut out_file: Box<dyn Write> = match &config.out_file {
+        Some(out_name) => Box::new(File::create(out_name)?),
+        _ => Box::new(io::stdout()),
+    };
     let mut line = String::new();
     let mut previous = String::new();
     let mut count: u64 = 0;
 
-    let print = |count: u64, text: &str| {
+    let mut print = |count: u64, text: &str| -> MyResult<()> {
         if count > 0 {
             if config.count {
-                print!("{:>4} {}", count, text);
+                write!(out_file, "{:>4} {}", count, text)?;
             } else {
-                print!("{}", text);
+                write!(out_file, "{}", text)?;
             }
         }
+        Ok(())
     };
 
     loop {
@@ -77,7 +83,7 @@ pub fn run(config: Config) -> MyResult<()> {
         }
 
         if line.trim_end() != previous.trim_end() {
-            print(count, &previous);
+            print(count, &previous)?;
             previous = line.clone();
             count = 0;
         }
@@ -86,7 +92,7 @@ pub fn run(config: Config) -> MyResult<()> {
         line.clear();
     }
 
-    print(count, &previous);
+    print(count, &previous)?;
     Ok(())
 }
 
