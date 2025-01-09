@@ -63,9 +63,9 @@ pub fn run(config: Config) -> MyResult<()> {
     let print = |count: u64, text: &str| {
         if count > 0 {
             if config.count {
-                println!("{:>4} {}", count, text);
+                print!("{:>4} {}", count, text);
             } else {
-                println!("{}", text);
+                print!("{}", text);
             }
         }
     };
