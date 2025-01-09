@@ -60,6 +60,16 @@ pub fn run(config: Config) -> MyResult<()> {
     let mut previous = String::new();
     let mut count: u64 = 0;
 
+    let print = |count: u64, text: &str| {
+        if count > 0 {
+            if config.count {
+                println!("{:>4} {}", count, text);
+            } else {
+                println!("{}", text);
+            }
+        }
+    };
+
     loop {
         let bytes = file.read_line(&mut line)?;
         if bytes == 0 {
@@ -67,20 +77,16 @@ pub fn run(config: Config) -> MyResult<()> {
         }
 
         if line.trim_end() != previous.trim_end() {
-            if count > 0 {
-                print!("{:>4} {}", count, previous);
-                previous = line.clone();
-                count = 0;
-            }
+            print(count, &previous);
+            previous = line.clone();
+            count = 0;
         }
 
         count += 1;
         line.clear();
     }
 
-    if count > 0 {
-        print!("{:>4} {}", count, previous);
-    }
+    print(count, &previous);
     Ok(())
 }
 
