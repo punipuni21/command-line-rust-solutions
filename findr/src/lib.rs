@@ -17,7 +17,7 @@ enum EntryType {
 pub struct Config {
     paths: Vec<String>,
     names: Vec<Regex>,
-    entry_type: EntryType,
+    entry_types: Vec<EntryType>,
 }
 
 pub fn run(config: Config) -> MyResult<()> {
@@ -35,8 +35,7 @@ pub fn get_args() -> MyResult<Config> {
                 .help("Name")
                 .short('n')
                 .long("name")
-                .required(true)
-                .num_args(1..),
+                .num_args(0..),
         )
         .arg(
             Arg::new("types")
@@ -45,10 +44,10 @@ pub fn get_args() -> MyResult<Config> {
                 .short('t')
                 .long("Type")
                 .value_parser(clap::builder::PossibleValuesParser::new(["f", "d", "l"]))
-                .num_args(1..),
+                .num_args(0..),
         )
         .arg(
-            Arg::new("path")
+            Arg::new("paths")
                 .value_name("PATH")
                 .help("Search paths")
                 .default_value(".")
@@ -72,19 +71,23 @@ pub fn get_args() -> MyResult<Config> {
         .map(|s| s.to_string())
         .collect();
 
-    let entry_type = matches
-        .get_one::<String>("types")
-        .map(|vals| match vals.as_str() {
-            "f" => Dir,
-            "d" => File,
-            "l" => Link,
-            _ => unreachable!("Invalid type"),
+    let entry_types = matches
+        .get_many::<String>("types")
+        .map(|vals| {
+            vals.into_iter()
+                .map(|val| match val.as_str() {
+                    "d" => Dir,
+                    "f" => File,
+                    "l" => Link,
+                    _ => unreachable!("Invalid type"),
+                })
+                .collect()
         })
-        .unwrap();
+        .unwrap_or_default();
 
     Ok(Config {
         paths,
         names,
-        entry_type,
+        entry_types,
     })
 }
