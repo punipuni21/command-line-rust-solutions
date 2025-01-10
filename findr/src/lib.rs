@@ -2,6 +2,7 @@ use crate::EntryType::*;
 use clap::{Arg, Command};
 use regex::Regex;
 use std::error::Error;
+use walkdir::WalkDir;
 
 type MyResult<T> = Result<T, Box<dyn std::error::Error>>;
 
@@ -17,6 +18,18 @@ pub struct Config {
     paths: Vec<String>,
     names: Vec<Regex>,
     entry_type: EntryType,
+}
+
+pub fn run(config: Config) -> MyResult<()> {
+    for path in &config.paths {
+        for entry in WalkDir::new(path) {
+            match entry {
+                Err(e) => eprintln!("{}", e),
+                Ok(entry) => println!("{}", entry.path().display()),
+            }
+        }
+    }
+    Ok(())
 }
 
 pub fn get_args() -> MyResult<Config> {
