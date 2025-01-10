@@ -21,14 +21,7 @@ pub struct Config {
 }
 
 pub fn run(config: Config) -> MyResult<()> {
-    for path in &config.paths {
-        for entry in WalkDir::new(path) {
-            match entry {
-                Err(e) => eprintln!("{}", e),
-                Ok(entry) => println!("{}", entry.path().display()),
-            }
-        }
-    }
+    println!("{:?}", config);
     Ok(())
 }
 
