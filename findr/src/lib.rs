@@ -21,7 +21,7 @@ pub struct Config {
 }
 
 pub fn run(config: Config) -> MyResult<()> {
-    println!("{:?}", config);
+    println!("{:#?}", config);
     Ok(())
 }
 
