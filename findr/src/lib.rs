@@ -50,6 +50,7 @@ pub fn get_args() -> MyResult<Config> {
                 .help("Entry type")
                 .short('t')
                 .long("type")
+                // possible_valuesからvalue_parserに変更されている
                 .value_parser(clap::builder::PossibleValuesParser::new(["f", "d", "l"]))
                 .num_args(0..),
         )
