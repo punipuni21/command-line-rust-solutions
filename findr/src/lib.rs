@@ -42,7 +42,7 @@ pub fn get_args() -> MyResult<Config> {
                 .value_name("TYPE")
                 .help("Entry type")
                 .short('t')
-                .long("Type")
+                .long("type")
                 .value_parser(clap::builder::PossibleValuesParser::new(["f", "d", "l"]))
                 .num_args(0..),
         )
