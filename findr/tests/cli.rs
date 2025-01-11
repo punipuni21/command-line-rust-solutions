@@ -42,7 +42,7 @@ fn dies_bad_name() -> Result<()> {
         .args(["--name", "*.csv"])
         .assert()
         .failure()
-        .stderr(predicate::str::contains("error: invalid value '*.csv'"));
+        .stderr(predicate::str::contains("error: Invalid value '*.csv'"));
     Ok(())
 }
 
