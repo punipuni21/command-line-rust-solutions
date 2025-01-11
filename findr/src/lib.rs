@@ -60,6 +60,7 @@ pub fn get_args() -> MyResult<Config> {
                 .help("Name")
                 .short('n')
                 .long("name")
+                .action(clap::ArgAction::Append)
                 .num_args(0..),
         )
         .arg(
