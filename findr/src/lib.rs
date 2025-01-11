@@ -35,6 +35,11 @@ pub fn run(config: Config) -> MyResult<()> {
                                 Dir => entry.file_type().is_dir(),
                                 File => entry.file_type().is_file(),
                             })
+                            && (config.entry_types.is_empty()
+                                || config
+                                    .names
+                                    .iter()
+                                    .any(|re| re.is_match(&entry.file_name().to_string_lossy())))
                     {
                         println!("{}", entry.path().display())
                     }
