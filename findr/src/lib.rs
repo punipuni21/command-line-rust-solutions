@@ -35,7 +35,7 @@ pub fn run(config: Config) -> MyResult<()> {
                                 Dir => entry.file_type().is_dir(),
                                 File => entry.file_type().is_file(),
                             })
-                            && (config.entry_types.is_empty()
+                            && (config.names.is_empty()
                                 || config
                                     .names
                                     .iter()
