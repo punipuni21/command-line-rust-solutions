@@ -76,18 +76,23 @@ pub fn get_args() -> MyResult<Config> {
         .map(|s| s.to_string())
         .collect();
 
-    // let delimiter = matches
-    //     .get_one::<String>("lines")
-    //     .map(|s| s.as_str()) //String->&str
-    //     .map(parse_positive_int)
-    //     .transpose()
-    //     .map_err(|e| {
-    //         // 本とエラーメッセージが違うので注意
-    //         format!(
-    //             "error: invalid value '{e}' for \
-    //       '--lines <LINES>': invalid digit found in string"
-    //         )
-    //     })?;
+    // fields, bytes. charsを取得
+
+    let extract = if let Some(field_pos) = fields {
+        Fields(field_pos)
+    } else if let Some(byte_pos) = bytes {
+        Bytes(byte_pos)
+    } else if let Some(char_pos) = chars {
+        Chars(char_pos)
+    } else {
+        return Err(From::from("Must have --fields, --bytes, or --chars"));
+    };
+
+    Ok(Config {
+        files,
+        delimiter,
+        extract,
+    })
 }
 
 fn parse_pos(range: String) -> MyResult<PositionList> {
