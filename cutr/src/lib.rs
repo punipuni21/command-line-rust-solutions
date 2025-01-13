@@ -1,5 +1,6 @@
 use crate::Extract::*;
 use clap::{builder::Str, Arg, Command};
+use regex::Regex;
 use std::{error::Error, ops::Range};
 
 type MyResult<T> = Result<T, Box<dyn Error>>;
@@ -90,7 +91,7 @@ pub fn get_args() -> MyResult<Config> {
 }
 
 fn parse_pos(range: String) -> MyResult<PositionList> {
-    unimplemented!()
+    let range_re = Regex::new(r"^(\d+)-(\d+)$").unwrap();
 }
 
 // --------------------------------------------------
