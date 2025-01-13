@@ -33,6 +33,31 @@ pub fn get_args() -> MyResult<Config> {
                 .num_args(0..),
         )
         .arg(
+            Arg::new("chars")
+                .value_name("CHARS")
+                .short('c')
+                .long("chars")
+                .help("Selected characters")
+                .num_args(0..),
+        )
+        .arg(
+            Arg::new("delim")
+                .value_name("DELIMITER")
+                .short('d')
+                .long("delim")
+                .help("Field delimiter")
+                .default_value(" ")
+                .num_args(0..),
+        )
+        .arg(
+            Arg::new("fields")
+                .value_name("FIELDS")
+                .short('f')
+                .long("fields")
+                .help("Selected fields")
+                .num_args(0..),
+        )
+        .arg(
             Arg::new("files")
                 .value_name("FILE")
                 .help("Input files")
@@ -40,4 +65,23 @@ pub fn get_args() -> MyResult<Config> {
                 .num_args(1..),
         )
         .get_matches();
+
+    let files: Vec<String> = matches
+        .get_many::<String>("files")
+        .unwrap()
+        .map(|s| s.to_string())
+        .collect();
+
+    let delimiter = matches
+        .get_one::<String>("lines")
+        .map(|s| s.as_str()) //String->&str
+        .map(parse_positive_int)
+        .transpose()
+        .map_err(|e| {
+            // 本とエラーメッセージが違うので注意
+            format!(
+                "error: invalid value '{e}' for \
+          '--lines <LINES>': invalid digit found in string"
+            )
+        })?;
 }
