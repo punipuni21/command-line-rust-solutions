@@ -72,16 +72,20 @@ pub fn get_args() -> MyResult<Config> {
         .map(|s| s.to_string())
         .collect();
 
-    let delimiter = matches
-        .get_one::<String>("lines")
-        .map(|s| s.as_str()) //String->&str
-        .map(parse_positive_int)
-        .transpose()
-        .map_err(|e| {
-            // 本とエラーメッセージが違うので注意
-            format!(
-                "error: invalid value '{e}' for \
-          '--lines <LINES>': invalid digit found in string"
-            )
-        })?;
+    // let delimiter = matches
+    //     .get_one::<String>("lines")
+    //     .map(|s| s.as_str()) //String->&str
+    //     .map(parse_positive_int)
+    //     .transpose()
+    //     .map_err(|e| {
+    //         // 本とエラーメッセージが違うので注意
+    //         format!(
+    //             "error: invalid value '{e}' for \
+    //       '--lines <LINES>': invalid digit found in string"
+    //         )
+    //     })?;
+}
+
+fn parse_pos(range: &str) -> MyResult<PositionList> {
+    unimplemented!()
 }
