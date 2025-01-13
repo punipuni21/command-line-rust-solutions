@@ -30,6 +30,7 @@ pub fn get_args() -> MyResult<Config> {
                 .short('b')
                 .long("bytes")
                 .help("Selected bytes")
+                .conflicts_with_all(&["fields", "chars"])
                 .num_args(0..),
         )
         .arg(
@@ -38,15 +39,16 @@ pub fn get_args() -> MyResult<Config> {
                 .short('c')
                 .long("chars")
                 .help("Selected characters")
+                .conflicts_with_all(&["fields", "bytes"])
                 .num_args(0..),
         )
         .arg(
-            Arg::new("delim")
+            Arg::new("delimiter")
                 .value_name("DELIMITER")
                 .short('d')
                 .long("delim")
                 .help("Field delimiter")
-                .default_value(" ")
+                .default_value("\t")
                 .num_args(0..),
         )
         .arg(
@@ -55,6 +57,7 @@ pub fn get_args() -> MyResult<Config> {
                 .short('f')
                 .long("fields")
                 .help("Selected fields")
+                .conflicts_with_all(&["bytes", "chars"])
                 .num_args(0..),
         )
         .arg(
