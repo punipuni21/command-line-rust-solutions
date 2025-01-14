@@ -50,7 +50,7 @@ pub fn get_args() -> MyResult<Config> {
                 .long("delim")
                 .help("Field delimiter")
                 .default_value("\t")
-                .num_args(0..),
+                .num_args(0..=1),
         )
         .arg(
             Arg::new("fields")
@@ -77,6 +77,8 @@ pub fn get_args() -> MyResult<Config> {
         .collect();
 
     // fields, bytes. charsを取得
+
+    let delimitew
 
     let extract = if let Some(field_pos) = fields {
         Fields(field_pos)
