@@ -1,5 +1,5 @@
 use crate::Extract::*;
-use clap::{builder::Str, Arg, Command};
+use clap::{Arg, Command};
 use regex::Regex;
 use std::{error::Error, num::NonZeroUsize, ops::Range};
 
@@ -110,6 +110,28 @@ fn parse_index(input: String) -> Result<usize, String> {
 
 fn parse_pos(range: String) -> MyResult<PositionList> {
     let range_re = Regex::new(r"^(\d+)-(\d+)$").unwrap();
+    range
+        .split(',')
+        .into_iter()
+        .map(|val| {
+            parse_index(val.to_string()).map(|n| n..n + 1).or_else(|e| {
+                range_re.captures(val).ok_or(e).and_then(|captures| {
+                    let n1 = parse_index(captures[1].to_string())?;
+                    let n2 = parse_index(captures[2].to_string())?;
+                    if n2 >= n1 {
+                        return Err(format!(
+                            "First number in range({})\
+            must be lower than second number({})",
+                            n1 + 1,
+                            n2 + 1
+                        ));
+                    }
+                    Ok(n1..n2 + 1)
+                })
+            })
+        })
+        .collect::<Result<_, _>>()
+        .map_err(From::from)
 }
 
 // --------------------------------------------------
