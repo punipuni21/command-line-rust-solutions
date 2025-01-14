@@ -1,7 +1,7 @@
 use crate::Extract::*;
 use clap::{builder::Str, Arg, Command};
 use regex::Regex;
-use std::{error::Error, ops::Range};
+use std::{error::Error, num::NonZeroUsize, ops::Range};
 
 type MyResult<T> = Result<T, Box<dyn Error>>;
 type PositionList = Vec<Range<usize>>;
@@ -93,6 +93,19 @@ pub fn get_args() -> MyResult<Config> {
         delimiter,
         extract,
     })
+}
+
+fn parse_index(input: String) -> Result<usize, String> {
+    let value_error = || format!("illegal list value: \"{}\"", input);
+    input
+        .starts_with('+')
+        .then(|| Err(value_error()))
+        .unwrap_or_else(|| {
+            input
+                .parse::<NonZeroUsize>()
+                .map(|n| usize::from(n) - 1)
+                .map_err(|_| value_error())
+        })
 }
 
 fn parse_pos(range: String) -> MyResult<PositionList> {
