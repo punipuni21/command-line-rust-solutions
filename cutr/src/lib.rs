@@ -20,6 +20,8 @@ pub struct Config {
     extract: Extract,
 }
 
+//see https://github.com/kyclark/command-line-rust/commit/222e317bb8f42ed1a0264a3d3a094b6854f1cd07#diff-67e93644e6ef5be6f019ce61c5eaf2201cc1bbb4679a69d2cb2e783085a7d39b
+
 pub fn get_args() -> MyResult<Config> {
     let matches = Command::new("curt")
         .version("0.1.0")
