@@ -78,7 +78,21 @@ pub fn get_args() -> MyResult<Config> {
 
     // fields, bytes. charsを取得
 
-    let delimitew
+    let delimiter = matches.get_one::<String>("delimiter").unwrap();
+    let delim_bytes = delimiter.as_bytes();
+    if delim_bytes.len() != 1 {
+        return Err(From::from(format!(
+            "--delim \"{}\" must be a single byte",
+            delimiter
+        )));
+    }
+
+    //fieldsを求める
+    let fields = matches
+        .get_one("fields")
+        .cloned()
+        .map(|v: String| parse_pos(v))
+        .transpose()?;
 
     let extract = if let Some(field_pos) = fields {
         Fields(field_pos)
