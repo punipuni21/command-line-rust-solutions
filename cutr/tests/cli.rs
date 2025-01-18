@@ -55,7 +55,7 @@ fn dies(args: &[&str], expected: &str) -> Result<()> {
 // --------------------------------------------------
 #[test]
 fn dies_not_enough_args() -> Result<()> {
-    dies(&[CSV], "Error: Must have --fields, --bytes, or --chars")
+    dies(&[CSV], "Error: Must have --fields, --bytes, or --chars") // 期待値を修正している
 }
 
 // --------------------------------------------------
