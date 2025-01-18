@@ -1,7 +1,13 @@
 use crate::Extract::*;
 use clap::{Arg, Command};
 use regex::Regex;
-use std::{error::Error, num::NonZeroUsize, ops::Range};
+use std::{
+    error::Error,
+    fs::File,
+    io::{self, BufRead, BufReader},
+    num::NonZeroUsize,
+    ops::Range,
+};
 
 type MyResult<T> = Result<T, Box<dyn Error>>;
 type PositionList = Vec<Range<usize>>;
@@ -21,8 +27,20 @@ pub struct Config {
 }
 
 pub fn run(config: Config) -> MyResult<()> {
-    println!("{:#?}", &config);
+    for filename in &config.files {
+        match open(filename) {
+            Err(err) => eprintln!("{}:{}", filename, err),
+            Ok(_) => println!("Opened {}", filename),
+        }
+    }
     Ok(())
+}
+
+fn open(filename: &str) -> MyResult<Box<dyn BufRead>> {
+    match filename {
+        "-" => Ok(Box::new(BufReader::new(io::stdin()))),
+        _ => Ok(Box::new(BufReader::new(File::open(filename)?))),
+    }
 }
 
 //see https://github.com/kyclark/command-line-rust/commit/222e317bb8f42ed1a0264a3d3a094b6854f1cd07#diff-67e93644e6ef5be6f019ce61c5eaf2201cc1bbb4679a69d2cb2e783085a7d39b
