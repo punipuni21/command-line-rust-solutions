@@ -83,8 +83,6 @@ pub fn get_args() -> MyResult<Config> {
         .map(|s| s.to_string())
         .collect();
 
-    // fields, bytes. charsを取得
-
     let delimiter = matches.get_one::<String>("delimiter").unwrap();
     let delim_bytes = delimiter.as_bytes();
     if delim_bytes.len() != 1 {
@@ -94,7 +92,6 @@ pub fn get_args() -> MyResult<Config> {
         )));
     }
 
-    //fieldsを求める
     let fields = matches
         .get_one("fields")
         .cloned()
