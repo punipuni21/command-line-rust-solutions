@@ -20,6 +20,11 @@ pub struct Config {
     extract: Extract,
 }
 
+pub fn run(config: Config) -> MyResult<()> {
+    println!("{:#?}", &config);
+    Ok(())
+}
+
 //see https://github.com/kyclark/command-line-rust/commit/222e317bb8f42ed1a0264a3d3a094b6854f1cd07#diff-67e93644e6ef5be6f019ce61c5eaf2201cc1bbb4679a69d2cb2e783085a7d39b
 
 pub fn get_args() -> MyResult<Config> {
@@ -148,10 +153,10 @@ fn parse_pos(range: String) -> MyResult<PositionList> {
                 range_re.captures(val).ok_or(e).and_then(|captures| {
                     let n1 = parse_index(captures[1].to_string())?;
                     let n2 = parse_index(captures[2].to_string())?;
-                    if n2 >= n1 {
+                    if n1 >= n2 {
                         return Err(format!(
-                            "First number in range({})\
-            must be lower than second number({})",
+                            "First number in range ({}) \
+            must be lower than second number ({})",
                             n1 + 1,
                             n2 + 1
                         ));
