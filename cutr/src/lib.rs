@@ -96,6 +96,18 @@ pub fn get_args() -> MyResult<Config> {
         .map(|v: String| parse_pos(v))
         .transpose()?;
 
+    let bytes = matches
+        .get_one("bytes")
+        .cloned()
+        .map(|v: String| parse_pos(v))
+        .transpose()?;
+
+    let chars = matches
+        .get_one("chars")
+        .cloned()
+        .map(|v: String| parse_pos(v))
+        .transpose()?;
+
     let extract = if let Some(field_pos) = fields {
         Fields(field_pos)
     } else if let Some(byte_pos) = bytes {
@@ -108,7 +120,7 @@ pub fn get_args() -> MyResult<Config> {
 
     Ok(Config {
         files,
-        delimiter,
+        delimiter: *delim_bytes.first().unwrap(),
         extract,
     })
 }
