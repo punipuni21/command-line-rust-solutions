@@ -42,6 +42,9 @@ fn open(filename: &str) -> MyResult<Box<dyn BufRead>> {
         _ => Ok(Box::new(BufReader::new(File::open(filename)?))),
     }
 }
+fn extract_chars(line: &str, char_pos: &[Range<usize>]) -> String {
+    unimplemented!()
+}
 
 //see https://github.com/kyclark/command-line-rust/commit/222e317bb8f42ed1a0264a3d3a094b6854f1cd07#diff-67e93644e6ef5be6f019ce61c5eaf2201cc1bbb4679a69d2cb2e783085a7d39b
 
