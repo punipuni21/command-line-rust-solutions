@@ -195,10 +195,10 @@ fn parse_pos(range: String) -> MyResult<PositionList> {
 // --------------------------------------------------
 #[cfg(test)]
 mod unit_tests {
+    use crate::extract_bytes;
     use crate::extract_chars;
 
     use super::parse_pos;
-    use csv::StringRecord;
     use pretty_assertions::assert_eq;
 
     #[test]
