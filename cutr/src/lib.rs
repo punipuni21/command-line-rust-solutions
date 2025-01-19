@@ -42,7 +42,12 @@ fn open(filename: &str) -> MyResult<Box<dyn BufRead>> {
         _ => Ok(Box::new(BufReader::new(File::open(filename)?))),
     }
 }
+
 fn extract_chars(line: &str, char_pos: &[Range<usize>]) -> String {
+    unimplemented!()
+}
+
+fn extract_bytes(line: &str, char_pos: &[Range<usize>]) -> String {
     unimplemented!()
 }
 
@@ -322,5 +327,15 @@ mod unit_tests {
         assert_eq!(extract_chars("ábc", &[0..3]), "ábc".to_string());
         assert_eq!(extract_chars("ábc", &[2..3, 1..2]), "cb".to_string());
         assert_eq!(extract_chars("ábc", &[0..1, 1..2, 4..5]), "áb".to_string());
+    }
+
+    #[test]
+    fn test_extract_bytes() {
+        assert_eq!(extract_bytes("ábc", &[0..1]), "�".to_string());
+        assert_eq!(extract_bytes("ábc", &[0..2]), "á".to_string());
+        assert_eq!(extract_bytes("ábc", &[0..3]), "áb".to_string());
+        assert_eq!(extract_bytes("ábc", &[0..4]), "ábc".to_string());
+        assert_eq!(extract_bytes("ábc", &[3..4, 2..3]), "cb".to_string());
+        assert_eq!(extract_bytes("ábc", &[0..2, 5..6]), "á".to_string());
     }
 }
