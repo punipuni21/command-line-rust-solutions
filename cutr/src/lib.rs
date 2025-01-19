@@ -51,6 +51,10 @@ fn extract_bytes(line: &str, char_pos: &[Range<usize>]) -> String {
     unimplemented!()
 }
 
+fn extract_fields(rec: &csv::StringRecord, field_pos: &[Range<usize>]) -> Vec<String> {
+    unimplemented!()
+}
+
 //see https://github.com/kyclark/command-line-rust/commit/222e317bb8f42ed1a0264a3d3a094b6854f1cd07#diff-67e93644e6ef5be6f019ce61c5eaf2201cc1bbb4679a69d2cb2e783085a7d39b
 
 pub fn get_args() -> MyResult<Config> {
@@ -197,8 +201,10 @@ fn parse_pos(range: String) -> MyResult<PositionList> {
 mod unit_tests {
     use crate::extract_bytes;
     use crate::extract_chars;
+    use crate::extract_fields;
 
     use super::parse_pos;
+    use csv::StringRecord;
     use pretty_assertions::assert_eq;
 
     #[test]
@@ -337,5 +343,15 @@ mod unit_tests {
         assert_eq!(extract_bytes("ábc", &[0..4]), "ábc".to_string());
         assert_eq!(extract_bytes("ábc", &[3..4, 2..3]), "cb".to_string());
         assert_eq!(extract_bytes("ábc", &[0..2, 5..6]), "á".to_string());
+    }
+
+    #[test]
+    fn test_extract_fields() {
+        let rec = StringRecord::from(vec!["Captain", "Sham", "12345"]);
+        assert_eq!(extract_fields(&rec, &[0..1]), &["Captain"]);
+        assert_eq!(extract_fields(&rec, &[1..2]), &["Sham"]);
+        assert_eq!(extract_fields(&rec, &[0..1, 2..3]), &["Captain", "12345"]);
+        assert_eq!(extract_fields(&rec, &[0..1, 3..4]), &["Captain"]);
+        assert_eq!(extract_fields(&rec, &[1..2, 0..1]), &["Sham", "Captain"]);
     }
 }
