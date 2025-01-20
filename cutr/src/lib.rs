@@ -67,8 +67,7 @@ fn extract_fields<'a>(reccord: &'a csv::StringRecord, field_pos: &[Range<usize>]
     field_pos
         .iter()
         .cloned()
-        .flat_map(|range| range.filter_map(|i| rec.get(i)))
-        .map(|s| s.to_string())
+        .flat_map(|range| range.filter_map(|i| reccord.get(i)))
         .collect()
 }
 
