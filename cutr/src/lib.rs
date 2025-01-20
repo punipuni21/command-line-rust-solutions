@@ -63,8 +63,13 @@ fn extract_bytes(line: &str, byte_pos: &[Range<usize>]) -> String {
     String::from_utf8_lossy(&selected).into_owned()
 }
 
-fn extract_fields(rec: &csv::StringRecord, field_pos: &[Range<usize>]) -> Vec<String> {
-    unimplemented!()
+fn extract_fields<'a>(reccord: &'a csv::StringRecord, field_pos: &[Range<usize>]) -> Vec<&'a str> {
+    field_pos
+        .iter()
+        .cloned()
+        .flat_map(|range| range.filter_map(|i| rec.get(i)))
+        .map(|s| s.to_string())
+        .collect()
 }
 
 //see https://github.com/kyclark/command-line-rust/commit/222e317bb8f42ed1a0264a3d3a094b6854f1cd07#diff-67e93644e6ef5be6f019ce61c5eaf2201cc1bbb4679a69d2cb2e783085a7d39b
