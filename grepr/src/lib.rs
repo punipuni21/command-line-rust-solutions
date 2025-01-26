@@ -19,6 +19,19 @@ pub fn get_args() -> MyResult<Config> {
         .author("ryo")
         .about("Rust grep")
         .arg(
+            Arg::new("pattern")
+                .value_name("PATTERN")
+                .help("Search pattern")
+                .required(true),
+        )
+        .arg(
+            Arg::new("files")
+                .value_name("FILE")
+                .help("Input files")
+                .default_value("-")
+                .num_args(1..),
+        )
+        .arg(
             Arg::new("recursive")
                 .short('r')
                 .long("recursive")
@@ -45,19 +58,6 @@ pub fn get_args() -> MyResult<Config> {
                 .long("invert-match")
                 .help("Invert match")
                 .default_value("false"),
-        )
-        .arg(
-            Arg::new("pattern")
-                .value_name("PATTERN")
-                .help("Search pattern")
-                .required(true),
-        )
-        .arg(
-            Arg::new("files")
-                .value_name("FILE")
-                .help("Input files")
-                .default_value("-")
-                .num_args(1..),
         )
         .get_matches();
 
