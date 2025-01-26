@@ -2,7 +2,7 @@ use clap::{Arg, Command};
 use regex::{Regex, RegexBuilder};
 use std::error::Error;
 
-type MyResult<T> = Result<(), Box<dyn Error>>;
+type MyResult<T> = Result<T, Box<dyn Error>>;
 
 #[derive(Debug)]
 pub struct Config {
@@ -53,7 +53,7 @@ pub fn get_args() -> MyResult<Config> {
                 .default_value("false"),
         )
         .arg(
-            Arg::new("invert-match")
+            Arg::new("invert")
                 .short('v')
                 .long("invert-match")
                 .help("Invert match")
@@ -61,12 +61,25 @@ pub fn get_args() -> MyResult<Config> {
         )
         .get_matches();
 
+    let pattern = matches.get_one::<String>("pattern").unwrap();
+
+    let pattern = RegexBuilder::new(pattern)
+        .case_insensitive(matches.get_flag("insensitive"))
+        .build()
+        .map_err(|_| format!("Invalid pattern \"{}\"", pattern))?;
+
+    let files: Vec<String> = matches
+        .get_many::<String>("files")
+        .unwrap()
+        .map(|s| s.to_string())
+        .collect();
+
     Ok(Config {
         pattern,
         files,
-        recursive,
-        count,
-        invert_match,
+        recursive: matches.get_flag("recursive"),
+        count: matches.get_flag("count"),
+        invert_match: matches.get_flag("invert"),
     })
 }
 
