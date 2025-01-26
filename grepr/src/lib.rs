@@ -91,7 +91,15 @@ pub fn get_args() -> MyResult<Config> {
 }
 
 pub fn run(config: Config) -> MyResult<()> {
-    println!("{:#?}", config);
+    println!("pattern \"{}\"", config.pattern);
+
+    let entries = find_files(&config.files, config.recursive);
+    for entry in entries {
+        match entry {
+            Err(e) => eprintln!("{}", e),
+            Ok(finename) => println!("filename: \"{}\"", finename),
+        }
+    }
     Ok(())
 }
 
