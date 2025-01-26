@@ -36,33 +36,36 @@ pub fn get_args() -> MyResult<Config> {
                 .short('r')
                 .long("recursive")
                 .help("Recursive search")
-                .default_value("false"),
+                .default_value("false")
+                .num_args(0),
         )
         .arg(
             Arg::new("count")
                 .short('c')
                 .long("count")
                 .help("Count occurrences")
-                .default_value("false"),
+                .default_value("false")
+                .num_args(0),
         )
         .arg(
             Arg::new("insensitive")
                 .short('i')
                 .long("insensitive")
                 .help("Case-insensitive")
-                .default_value("false"),
+                .default_value("false")
+                .num_args(0),
         )
         .arg(
             Arg::new("invert")
                 .short('v')
                 .long("invert-match")
                 .help("Invert match")
-                .default_value("false"),
+                .default_value("false")
+                .num_args(0),
         )
         .get_matches();
 
-    let pattern = matches.get_one::<String>("pattern").unwrap();
-
+    let pattern = matches.get_one::<String>("pattern").unwrap().as_str();
     let pattern = RegexBuilder::new(pattern)
         .case_insensitive(matches.get_flag("insensitive"))
         .build()
