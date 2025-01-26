@@ -4,7 +4,7 @@ use predicates::prelude::*;
 use pretty_assertions::assert_eq;
 use rand::{distributions::Alphanumeric, Rng};
 use std::{fs, path::Path};
-use sys_info::os_type;
+use sysinfo::System;
 
 const PRG: &str = "grepr";
 const BUSTLE: &str = "tests/inputs/bustle.txt";
@@ -64,13 +64,13 @@ fn warns_bad_file() -> Result<()> {
 // --------------------------------------------------
 fn run(args: &[&str], expected_file: &str) -> Result<()> {
     let windows_file = format!("{expected_file}.windows");
-    let expected_file = if os_type().unwrap() == "Windows"
-        && Path::new(&windows_file).is_file()
-    {
-        &windows_file
-    } else {
-        expected_file
-    };
+    let expected_file =
+        if System::os_version().unwrap() == "Windows" && Path::new(&windows_file).is_file() {
+            // sysinfoのos_typeは最新バージョンだとSystem::os_version()に変更されている
+            &windows_file
+        } else {
+            expected_file
+        };
 
     let expected = fs::read_to_string(expected_file)?;
     let output = Command::cargo_bin(PRG)?.args(args).output().expect("fail");
@@ -245,8 +245,7 @@ fn warns_dir_not_recursive() -> Result<()> {
 #[test]
 fn stdin() -> Result<()> {
     let input = fs::read_to_string(BUSTLE)?;
-    let expected =
-        fs::read_to_string("tests/expected/bustle.txt.the.capitalized")?;
+    let expected = fs::read_to_string("tests/expected/bustle.txt.the.capitalized")?;
 
     let output = Command::cargo_bin(PRG)?
         .arg("The")
@@ -270,8 +269,7 @@ fn stdin_insensitive_count() -> Result<()> {
         input += &fs::read_to_string(file)?;
     }
 
-    let expected_file =
-        "tests/expected/the.recursive.insensitive.count.stdin";
+    let expected_file = "tests/expected/the.recursive.insensitive.count.stdin";
     let expected = fs::read_to_string(expected_file)?;
 
     let output = Command::cargo_bin(PRG)?
