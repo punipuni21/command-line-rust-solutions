@@ -2,9 +2,10 @@ use clap::{Arg, Command};
 use regex::{Regex, RegexBuilder};
 use std::{
     error::Error,
-    fs::File,
+    fs::{self, File},
     io::{self, BufRead, BufReader},
 };
+use walkdir::WalkDir;
 
 type MyResult<T> = Result<T, Box<dyn Error>>;
 
@@ -18,7 +19,36 @@ pub struct Config {
 }
 
 fn find_files(paths: &[String], recursive: bool) -> Vec<MyResult<String>> {
-    unimplemented!()
+    let mut results = vec![];
+
+    for path in paths {
+        match path.as_str() {
+            "-" => results.push(Ok(path.to_string())),
+            _ => match fs::metadata(path) {
+                Ok(metadata) => {
+                    if metadata.is_dir() {
+                        if recursive {
+                            for entry in WalkDir::new(path)
+                                .into_iter()
+                                .flatten()
+                                .filter(|e| e.file_type().is_file())
+                            {
+                                results.push(Ok(entry.path().display().to_string()));
+                            }
+                        } else {
+                            results.push(Err(From::from(format!("{} is a directory", path))));
+                        }
+                    } else if metadata.is_file() {
+                        results.push(Ok(path.to_string()));
+                    }
+                }
+                Err(e) => {
+                    results.push(Err(From::from(format!("{}: {}", path, e))));
+                }
+            },
+        }
+    }
+    results
 }
 
 fn open(filename: &str) -> MyResult<Box<dyn BufRead>> {
