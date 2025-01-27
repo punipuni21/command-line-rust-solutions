@@ -155,17 +155,33 @@ pub fn get_args() -> MyResult<Config> {
 
 pub fn run(config: Config) -> MyResult<()> {
     println!("pattern \"{}\"", config.pattern);
-
     let entries = find_files(&config.files, config.recursive);
+    let num_files = entries.len();
+    let print = |fname: &str, val: &str| {
+        if num_files > 1 {
+            print!("{}:{}", fname, val);
+        } else {
+            print!("{}", val)
+        }
+    };
+
     for entry in entries {
         match entry {
             Err(e) => eprintln!("{}", e),
-            Ok(finename) => match open(&finename) {
-                Err(e) => eprintln!("{}: {}", finename, e),
-                Ok(file) => {
-                    let matches = find_lines(file, &config.pattern, config.invert_match);
-                    println!("Found {:?}", matches);
-                }
+            Ok(filename) => match open(&filename) {
+                Err(e) => eprintln!("{}: {}", filename, e),
+                Ok(file) => match find_lines(file, &config.pattern, config.invert_match) {
+                    Err(e) => eprintln!("{}", e),
+                    Ok(matches) => {
+                        if config.count {
+                            print(&filename, &format!("{}\n", matches.len()));
+                        } else {
+                            for line in &matches {
+                                print(&filename, line);
+                            }
+                        }
+                    }
+                },
             },
         }
     }
