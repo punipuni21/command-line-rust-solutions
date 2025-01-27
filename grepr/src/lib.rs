@@ -1,6 +1,10 @@
 use clap::{Arg, Command};
 use regex::{Regex, RegexBuilder};
-use std::error::Error;
+use std::{
+    error::Error,
+    fs::File,
+    io::{self, BufRead, BufReader},
+};
 
 type MyResult<T> = Result<T, Box<dyn Error>>;
 
@@ -15,6 +19,13 @@ pub struct Config {
 
 fn find_files(paths: &[String], recursive: bool) -> Vec<MyResult<String>> {
     unimplemented!()
+}
+
+fn open(filename: &str) -> MyResult<Box<dyn BufRead>> {
+    match filename {
+        "-" => Ok(Box::new(std::io::BufReader::new(io::stdin()))),
+        _ => Ok(Box::new(BufReader::new(File::open(filename)?))),
+    }
 }
 
 pub fn get_args() -> MyResult<Config> {
