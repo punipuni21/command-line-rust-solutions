@@ -1,9 +1,10 @@
-use clap::{Arg, Command};
+use clap::{builder::Str, Arg, Command};
 use regex::{Regex, RegexBuilder};
 use std::{
     error::Error,
     fs::{self, File},
     io::{self, BufRead, BufReader},
+    mem,
 };
 use walkdir::WalkDir;
 
@@ -63,7 +64,20 @@ fn find_lines<T: BufRead>(
     pattern: &Regex,
     invert_match: bool,
 ) -> MyResult<Vec<String>> {
-    unimplemented!();
+    let mut matches = vec![];
+    let mut line = String::new();
+
+    loop {
+        let bytes = file.read_line(&mut line)?;
+        if bytes == 0 {
+            break;
+        }
+        if pattern.is_match(&line) ^ invert_match {
+            matches.push(mem::take(&mut line));
+        }
+        line.clear();
+    }
+    Ok(matches)
 }
 
 pub fn get_args() -> MyResult<Config> {
