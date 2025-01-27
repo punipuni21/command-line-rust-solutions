@@ -116,7 +116,13 @@ pub fn run(config: Config) -> MyResult<()> {
     for entry in entries {
         match entry {
             Err(e) => eprintln!("{}", e),
-            Ok(finename) => println!("filename: \"{}\"", finename),
+            Ok(finename) => match open(&finename) {
+                Err(e) => eprintln!("{}: {}", finename, e),
+                Ok(file) => {
+                    let matches = find_lines(file, &config.pattern, config.invert_match);
+                    println!("Found {:?}", matches);
+                }
+            },
         }
     }
     Ok(())
