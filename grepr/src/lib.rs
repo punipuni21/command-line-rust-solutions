@@ -154,7 +154,6 @@ pub fn get_args() -> MyResult<Config> {
 }
 
 pub fn run(config: Config) -> MyResult<()> {
-    println!("pattern \"{}\"", config.pattern);
     let entries = find_files(&config.files, config.recursive);
     let num_files = entries.len();
     let print = |fname: &str, val: &str| {
