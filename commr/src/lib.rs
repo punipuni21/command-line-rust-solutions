@@ -23,15 +23,13 @@ pub fn get_args() -> MyResult<Config> {
             Arg::new("file1")
                 .value_name("FILE1")
                 .help("Input file 1")
-                .required(true)
-                .default_value("true"),
+                .required(true),
         )
         .arg(
             Arg::new("file2")
                 .value_name("FILE2")
                 .help("Input file 2")
-                .required(true)
-                .default_value("true"),
+                .required(true),
         )
         .arg(
             Arg::new("suppress_col1")
@@ -67,8 +65,7 @@ pub fn get_args() -> MyResult<Config> {
                 .long("output-delimiter")
                 .value_name("DELIM")
                 .help("Output delimiter")
-                .default_value("\t")
-                .required(true),
+                .default_value("\t"),
         )
         .get_matches();
 
