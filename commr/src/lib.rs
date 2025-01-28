@@ -86,3 +86,8 @@ pub fn get_args() -> MyResult<Config> {
         delimiter,
     })
 }
+
+pub fn run(config: Config) -> MyResult<()> {
+    println!("{:#?}", config);
+    Ok(())
+}
