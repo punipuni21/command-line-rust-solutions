@@ -72,13 +72,17 @@ pub fn get_args() -> MyResult<Config> {
         )
         .get_matches();
 
+    let file1 = matches.get_one::<String>("file1").unwrap().to_string();
+    let file2 = matches.get_one::<String>("file2").unwrap().to_string();
+    let delimiter = matches.get_one::<String>("delimiter").unwrap().to_string();
+
     Ok(Config {
-        file1: "file1".to_string(),
-        file2: "file2".to_string(),
-        show_col1: true,
-        show_col2: true,
-        show_col3: true,
-        insensitive: false,
-        delimiter: "\t".to_string(),
+        file1,
+        file2,
+        show_col1: matches.get_flag("suppress_col1"),
+        show_col2: matches.get_flag("suppress_col2"),
+        show_col3: matches.get_flag("suppress_col3"),
+        insensitive: matches.get_flag("insensitive"),
+        delimiter,
     })
 }
