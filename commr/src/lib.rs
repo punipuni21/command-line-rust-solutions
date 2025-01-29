@@ -40,28 +40,28 @@ pub fn get_args() -> MyResult<Config> {
                 .short('1')
                 .help("Suppress printing of column 1")
                 .default_value("true")
-                .required(false),
+                .num_args(0),
         )
         .arg(
             Arg::new("suppress_col2")
                 .short('2')
                 .help("Suppress printing of column 2")
                 .default_value("true")
-                .required(false),
+                .num_args(0),
         )
         .arg(
             Arg::new("suppress_col3")
                 .short('3')
                 .help("Suppress printing of column 3")
                 .default_value("true")
-                .required(false),
+                .num_args(0),
         )
         .arg(
             Arg::new("insensitive")
                 .short('i')
                 .help("Case-insensitive comparisn of lines")
                 .default_value("false")
-                .required(false),
+                .num_args(0),
         )
         .arg(
             Arg::new("delimiter")
@@ -80,9 +80,9 @@ pub fn get_args() -> MyResult<Config> {
     Ok(Config {
         file1,
         file2,
-        show_col1: matches.get_flag("suppress_col1"),
-        show_col2: matches.get_flag("suppress_col2"),
-        show_col3: matches.get_flag("suppress_col3"),
+        show_col1: !matches.get_flag("suppress_col1"),
+        show_col2: !matches.get_flag("suppress_col2"),
+        show_col3: !matches.get_flag("suppress_col3"),
         insensitive: matches.get_flag("insensitive"),
         delimiter,
     })
