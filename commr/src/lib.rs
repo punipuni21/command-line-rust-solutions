@@ -1,5 +1,9 @@
 use clap::{Arg, Command};
-use std::error::Error;
+use std::{
+    error::Error,
+    fs::File,
+    io::{self, BufRead, BufReader},
+};
 
 type MyResult<T> = Result<T, Box<dyn Error>>;
 
@@ -82,6 +86,15 @@ pub fn get_args() -> MyResult<Config> {
         insensitive: matches.get_flag("insensitive"),
         delimiter,
     })
+}
+
+fn open(filename: &str) -> MyResult<Box<dyn BufRead>> {
+    match filename {
+        "-" => Ok(Box::new(BufReader::new(io::stdin()))),
+        _ => Ok(Box::new(BufReader::new(
+            File::open(filename).map_err(|e| format!("{}: {}", filename, e))?,
+        ))),
+    }
 }
 
 pub fn run(config: Config) -> MyResult<()> {
