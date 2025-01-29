@@ -102,7 +102,7 @@ pub fn run(config: Config) -> MyResult<()> {
     let file2 = &config.file2;
 
     if file1 == "-" && file2 == "-" {
-        return Err(From::from("Both input files acnnot be STDIN (\"-\")"));
+        return Err(From::from("Both input files cannot be STDIN (\"-\")"));
     }
 
     let _file1 = open(&file1)?;
