@@ -105,9 +105,21 @@ pub fn run(config: Config) -> MyResult<()> {
         return Err(From::from("Both input files cannot be STDIN (\"-\")"));
     }
 
-    let _file1 = open(&file1)?;
-    let _file2 = open(&file2)?;
-    println!("Opened {} and {}", file1, file2);
+    let case = |line: String| {
+        if config.insensitive {
+            line.to_lowercase()
+        } else {
+            line
+        }
+    };
+
+    let mut lines1 = open(file1)?.lines().find_map(Result::ok).map(case);
+    let mut lines2 = open(file2)?.lines().find_map(Result::ok).map(case);
+
+    let line1 = lines1.iter().next();
+    let line2 = lines2.iter().next();
+    println!("line1: {:?}", line1);
+    println!("line2: {:?}", line2);
 
     Ok(())
 }
