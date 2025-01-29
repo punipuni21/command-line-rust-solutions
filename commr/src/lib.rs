@@ -116,10 +116,22 @@ pub fn run(config: Config) -> MyResult<()> {
     let mut lines1 = open(file1)?.lines().find_map(Result::ok).map(case);
     let mut lines2 = open(file2)?.lines().find_map(Result::ok).map(case);
 
-    let line1 = lines1.iter().next();
-    let line2 = lines2.iter().next();
-    println!("line1: {:?}", line1);
-    println!("line2: {:?}", line2);
+    let mut line1 = lines1.iter().next();
+    let mut line2 = lines2.iter().next();
 
-    Ok(())
+    while line1.is_some() || line2.is_some() {
+        match (&line1, &line2) {
+            (Some(_), Some(_)) => {
+                line1 = lines1.iter().next();
+                line2 = lines2.iter().next();
+            }
+            (Some(_), None) => {
+                line1 = lines1.iter().next();
+            }
+            (None, Some(_)) => {
+                line2 = lines2.iter().next();
+            }
+            _ => (),
+        };
+    }
 }
