@@ -98,6 +98,16 @@ fn open(filename: &str) -> MyResult<Box<dyn BufRead>> {
 }
 
 pub fn run(config: Config) -> MyResult<()> {
-    println!("{:#?}", config);
+    let file1 = &config.file1;
+    let file2 = &config.file2;
+
+    if file1 == "-" && file2 == "-" {
+        return Err(From::from("Both input files acnnot be STDIN (\"-\")"));
+    }
+
+    let _file1 = open(&file1)?;
+    let _file2 = open(&file2)?;
+    println!("Opened {} and {}", file1, file2);
+
     Ok(())
 }
