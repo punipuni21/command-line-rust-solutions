@@ -1,5 +1,6 @@
 use clap::{Arg, Command};
 use std::{
+    cmp::Ordering::*,
     error::Error,
     fs::File,
     io::{self, BufRead, BufReader},
@@ -113,23 +114,36 @@ pub fn run(config: Config) -> MyResult<()> {
         }
     };
 
-    let mut lines1 = open(file1)?.lines().find_map(Result::ok).map(case);
-    let mut lines2 = open(file2)?.lines().find_map(Result::ok).map(case);
+    let mut lines1 = open(file1)?.lines().filter_map(Result::ok).map(case);
+    let mut lines2 = open(file2)?.lines().filter_map(Result::ok).map(case);
 
-    let mut line1 = lines1.iter().next();
-    let mut line2 = lines2.iter().next();
+    let mut line1 = lines1.next();
+    let mut line2 = lines2.next();
 
     while line1.is_some() || line2.is_some() {
         match (&line1, &line2) {
-            (Some(_), Some(_)) => {
-                line1 = lines1.iter().next();
-                line2 = lines2.iter().next();
+            (Some(val1), Some(val2)) => match val1.cmp(val2) {
+                Equal => {
+                    println!("{}", val1);
+                    line1 = lines1.next();
+                    line2 = lines2.next();
+                }
+                Less => {
+                    println!("{}", val1);
+                    line1 = lines1.next();
+                }
+                Greater => {
+                    println!("{}", val2);
+                    line2 = lines2.next();
+                }
+            },
+            (Some(val1), None) => {
+                println!("{}", val1);
+                line1 = lines1.next();
             }
-            (Some(_), None) => {
-                line1 = lines1.iter().next();
-            }
-            (None, Some(_)) => {
-                line2 = lines2.iter().next();
+            (None, Some(val2)) => {
+                println!("{}", val2);
+                line2 = lines2.next();
             }
             _ => (),
         };
