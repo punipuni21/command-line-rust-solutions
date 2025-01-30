@@ -134,4 +134,5 @@ pub fn run(config: Config) -> MyResult<()> {
             _ => (),
         };
     }
+    Ok(())
 }
