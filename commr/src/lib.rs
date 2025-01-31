@@ -1,3 +1,4 @@
+use crate::Column::*;
 use clap::{Arg, Command};
 use std::{
     cmp::Ordering::*,
@@ -7,6 +8,12 @@ use std::{
 };
 
 type MyResult<T> = Result<T, Box<dyn Error>>;
+
+enum Column<'a> {
+    Col1(&'a str),
+    Col2(&'a str),
+    Col3(&'a str),
+}
 
 #[derive(Debug)]
 pub struct Config {
@@ -111,6 +118,39 @@ pub fn run(config: Config) -> MyResult<()> {
             line.to_lowercase()
         } else {
             line
+        }
+    };
+
+    let print = |col: Column| {
+        let mut columns = vec![];
+        match col {
+            Col1(val) => {
+                if config.show_col1 {
+                    columns.push(val);
+                }
+            }
+            Col2(val) => {
+                if config.show_col2 {
+                    if config.show_col1 {
+                        columns.push("");
+                    }
+                    columns.push(val);
+                }
+            }
+            Col3(val) => {
+                if config.show_col3 {
+                    if config.show_col1 {
+                        columns.push("");
+                    }
+                    if config.show_col2 {
+                        columns.push("");
+                    }
+                    columns.push(val);
+                }
+            }
+        };
+        if !columns.is_empty() {
+            println!("{}", columns.join(&config.delimiter));
         }
     };
 
