@@ -164,25 +164,25 @@ pub fn run(config: Config) -> MyResult<()> {
         match (&line1, &line2) {
             (Some(val1), Some(val2)) => match val1.cmp(val2) {
                 Equal => {
-                    println!("{}", val1);
+                    print(Col3(val1));
                     line1 = lines1.next();
                     line2 = lines2.next();
                 }
                 Less => {
-                    println!("{}", val1);
+                    print(Col1(val1));
                     line1 = lines1.next();
                 }
                 Greater => {
-                    println!("{}", val2);
+                    print(Col2(val1));
                     line2 = lines2.next();
                 }
             },
             (Some(val1), None) => {
-                println!("{}", val1);
+                print(Col1(val1));
                 line1 = lines1.next();
             }
             (None, Some(val2)) => {
-                println!("{}", val2);
+                print(Col2(val2));
                 line2 = lines2.next();
             }
             _ => (),
