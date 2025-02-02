@@ -25,8 +25,7 @@ pub fn get_args() -> MyResult<Config> {
         .about("Rust tail")
         .arg(
             Arg::new("files")
-                .long("lines")
-                .value_name("FILES")
+                .value_name("FILE")
                 .help("Input file(s)")
                 .num_args(1..),
         )
@@ -40,17 +39,17 @@ pub fn get_args() -> MyResult<Config> {
         )
         .arg(
             Arg::new("bytes")
-                .short('b')
+                .short('c')
                 .long("bytes")
                 .value_name("BYTES")
+                .conflicts_with("lines")
                 .help("Number of bytes"),
         )
         .arg(
             Arg::new("quiet")
                 .short('q')
                 .long("quiet")
-                .help("Suppress headers")
-                .default_value("false"),
+                .help("Suppress headers"),
         )
         .get_matches();
 
