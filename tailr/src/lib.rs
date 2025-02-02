@@ -23,10 +23,45 @@ pub fn get_args() -> MyResult<Config> {
         .version("0.1.0")
         .author("ryo")
         .about("Rust tail")
+        .arg(
+            Arg::new("files")
+                .long("lines")
+                .value_name("FILES")
+                .help("Input file(s)")
+                .num_args(1..),
+        )
+        .arg(
+            Arg::new("lines")
+                .short('n')
+                .long("lines")
+                .value_name("LINES")
+                .help("Number of lines")
+                .default_value("10"),
+        )
+        .arg(
+            Arg::new("bytes")
+                .short('b')
+                .long("bytes")
+                .value_name("BYTES")
+                .help("Number of bytes"),
+        )
+        .arg(
+            Arg::new("quiet")
+                .short('q')
+                .long("quiet")
+                .help("Suppress headers")
+                .default_value("false"),
+        )
         .get_matches();
 
+    let files: Vec<String> = matches
+        .get_many::<String>("files")
+        .unwrap()
+        .map(|s| s.to_string())
+        .collect();
+
     Ok(Config {
-        files: Vec::new(),
+        files,
         lines: PlusZero,
         bytes: None,
         quiet: false,
