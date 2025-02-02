@@ -32,3 +32,8 @@ pub fn get_args() -> MyResult<Config> {
         quiet: false,
     })
 }
+
+pub fn run(config: Config) -> MyResult<()> {
+    println!("{:#?}", config);
+    Ok(())
+}
