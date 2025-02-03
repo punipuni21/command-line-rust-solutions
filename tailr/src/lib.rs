@@ -1,7 +1,10 @@
 use crate::TakeValue::*;
 use clap::{Arg, Command};
+use once_cell::sync::OnceCell;
 use regex::Regex;
 use std::{error::Error, io::Take};
+
+static NUM_RE: OnceCell<Regex> = OnceCell::new();
 
 type MyResult<T> = Result<T, Box<dyn Error>>;
 
@@ -69,7 +72,7 @@ pub fn get_args() -> MyResult<Config> {
 }
 
 fn parse_num(val: String) -> MyResult<TakeValue> {
-    let num_re = Regex::new(r"^([+-]?)(\d+)$").unwrap();
+    let num_re = NUM_RE.get_or_init(|| Regex::new(r"^([+-]?)(\d+)$").unwrap());
 
     match num_re.captures(&val) {
         Some(caps) => {
