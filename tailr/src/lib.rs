@@ -8,7 +8,7 @@ static NUM_RE: OnceCell<Regex> = OnceCell::new();
 
 type MyResult<T> = Result<T, Box<dyn Error>>;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 enum TakeValue {
     PlusZero,
     TakeNum(i64),
@@ -63,11 +63,25 @@ pub fn get_args() -> MyResult<Config> {
         .map(|s| s.to_string())
         .collect();
 
+    let lines = matches
+        .get_one::<String>("lines")
+        .map(String::from)
+        .map(parse_num)
+        .transpose()
+        .map_err(|e| format!("illegal line count -- {}", e))?;
+
+    let bytes = matches
+        .get_one::<String>("bytes")
+        .map(String::from)
+        .map(parse_num)
+        .transpose()
+        .map_err(|e| format!("illegal byte count -- {}", e))?;
+
     Ok(Config {
         files,
-        lines: PlusZero,
-        bytes: None,
-        quiet: false,
+        lines: lines.unwrap(),
+        bytes,
+        quiet: matches.get_flag("quiet"),
     })
 }
 
