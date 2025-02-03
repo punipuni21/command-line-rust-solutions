@@ -89,7 +89,7 @@ pub fn get_args() -> MyResult<Config> {
 }
 
 fn parse_num(val: String) -> MyResult<TakeValue> {
-    let num_re = NUM_RE.get_or_init(|| Regex::new(r"^([+-]?)(\d+)$").unwrap());
+    let num_re = NUM_RE.get_or_init(|| Regex::new(r"^([+-])?(\d+)$").unwrap());
 
     match num_re.captures(&val) {
         Some(caps) => {
