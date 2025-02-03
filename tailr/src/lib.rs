@@ -68,10 +68,10 @@ pub fn get_args() -> MyResult<Config> {
     })
 }
 
-fn parse_num(val: &str) -> MyResult<TakeValue> {
+fn parse_num(val: String) -> MyResult<TakeValue> {
     let num_re = Regex::new(r"^([+-]?)(\d+)$").unwrap();
 
-    match num_re.captures(val) {
+    match num_re.captures(&val) {
         Some(caps) => {
             let sign = caps.get(1).map_or("-", |m| m.as_str());
             let num = format!("{}{}", sign, caps.get(2).unwrap().as_str());
