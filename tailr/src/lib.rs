@@ -31,6 +31,7 @@ pub fn get_args() -> MyResult<Config> {
             Arg::new("files")
                 .value_name("FILE")
                 .help("Input file(s)")
+                .required(true)
                 .num_args(1..),
         )
         .arg(
@@ -53,7 +54,9 @@ pub fn get_args() -> MyResult<Config> {
             Arg::new("quiet")
                 .short('q')
                 .long("quiet")
-                .help("Suppress headers"),
+                .help("Suppress headers")
+                .default_value("false")
+                .num_args(0),
         )
         .get_matches();
 
