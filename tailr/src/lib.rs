@@ -1,6 +1,7 @@
 use crate::TakeValue::*;
 use clap::{Arg, Command};
-use std::error::Error;
+use regex::Regex;
+use std::{error::Error, io::Take};
 
 type MyResult<T> = Result<T, Box<dyn Error>>;
 
@@ -68,7 +69,24 @@ pub fn get_args() -> MyResult<Config> {
 }
 
 fn parse_num(val: &str) -> MyResult<TakeValue> {
-    unimplemented!()
+    let num_re = Regex::new(r"^([+-]?)(\d+)$").unwrap();
+
+    match num_re.captures(val) {
+        Some(caps) => {
+            let sign = caps.get(1).map_or("-", |m| m.as_str());
+            let num = format!("{}{}", sign, caps.get(2).unwrap().as_str());
+            if let Ok(val) = num.parse() {
+                if sign == "+" && val == 0 {
+                    Ok(PlusZero)
+                } else {
+                    Ok(TakeNum(val))
+                }
+            } else {
+                Err(From::from(val))
+            }
+        }
+        _ => Err(From::from(val)),
+    }
 }
 
 pub fn run(config: Config) -> MyResult<()> {
