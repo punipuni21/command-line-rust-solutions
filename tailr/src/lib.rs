@@ -67,6 +67,10 @@ pub fn get_args() -> MyResult<Config> {
     })
 }
 
+fn parse_num(val: &str) -> MyResult<TakeValue> {
+    unimplemented!()
+}
+
 pub fn run(config: Config) -> MyResult<()> {
     println!("{:#?}", config);
     Ok(())
