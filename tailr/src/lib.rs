@@ -2,7 +2,7 @@ use crate::TakeValue::*;
 use clap::{Arg, Command};
 use once_cell::sync::OnceCell;
 use regex::Regex;
-use std::{error::Error, io::Take};
+use std::{error::Error, fs::File, io::Take};
 
 static NUM_RE: OnceCell<Regex> = OnceCell::new();
 
@@ -110,7 +110,12 @@ fn parse_num(val: String) -> MyResult<TakeValue> {
 }
 
 pub fn run(config: Config) -> MyResult<()> {
-    println!("{:#?}", config);
+    for filename in config.files.iter() {
+        match File::open(filename) {
+            Err(err) => eprintln!("{}: {}", filename, err),
+            Ok(_) => println!("Opened {}", filename),
+        }
+    }
     Ok(())
 }
 
