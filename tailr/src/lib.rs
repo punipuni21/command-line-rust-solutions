@@ -182,7 +182,11 @@ pub fn run(config: Config) -> MyResult<()> {
     for filename in config.files.iter() {
         match File::open(filename) {
             Err(err) => eprintln!("{}: {}", filename, err),
-            Ok(_) => println!("Opened {}", filename),
+            Ok(file) => {
+                let (total_lines, total_bytes) = count_lines_bytes(filename)?;
+                let file = BufReader::new(file);
+                print_lines(file, &config.lines, total_lines)?;
+            }
         }
     }
     Ok(())
