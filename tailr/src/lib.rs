@@ -5,7 +5,7 @@ use regex::Regex;
 use std::{
     error::Error,
     fs::File,
-    io::{BufRead, Read, Seek, Take},
+    io::{BufRead, BufReader, Read, Seek, SeekFrom},
 };
 
 static NUM_RE: OnceCell<Regex> = OnceCell::new();
@@ -129,7 +129,21 @@ fn print_lines(mut file: impl BufRead, num_lines: &TakeValue, total_lines: i64) 
 }
 
 fn count_lines_bytes(filename: &str) -> MyResult<(i64, i64)> {
-    unimplemented!()
+    let mut file = BufReader::new(File::open(filename)?);
+    let mut num_lines = 0;
+    let mut num_bytes = 0;
+    let mut buf = Vec::new();
+
+    loop {
+        let bytes_read = file.read_until(b'\n', &mut buf)?;
+        if bytes_read == 0 {
+            break;
+        }
+        num_lines += 1;
+        num_bytes += bytes_read as i64;
+        buf.clear();
+    }
+    Ok((num_lines, num_bytes))
 }
 
 pub fn run(config: Config) -> MyResult<()> {
