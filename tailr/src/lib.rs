@@ -2,7 +2,11 @@ use crate::TakeValue::*;
 use clap::{Arg, Command};
 use once_cell::sync::OnceCell;
 use regex::Regex;
-use std::{error::Error, fs::File, io::Take};
+use std::{
+    error::Error,
+    fs::File,
+    io::{BufRead, Read, Seek, Take},
+};
 
 static NUM_RE: OnceCell<Regex> = OnceCell::new();
 
@@ -109,6 +113,18 @@ fn parse_num(val: String) -> MyResult<TakeValue> {
     }
 }
 
+fn get_start_index(take_value: &TakeValue, total_lines: i64) -> Option<u64> {
+    unimplemented!()
+}
+
+fn print_lines(mut file: impl BufRead, num_lines: &TakeValue, total_lines: i64) -> MyResult<()> {
+    unimplemented!()
+}
+
+fn count_lines_bytes(filename: &str) -> MyResult<(i64, i64)> {
+    unimplemented!()
+}
+
 pub fn run(config: Config) -> MyResult<()> {
     for filename in config.files.iter() {
         match File::open(filename) {
@@ -122,23 +138,23 @@ pub fn run(config: Config) -> MyResult<()> {
 // --------------------------------------------------
 #[cfg(test)]
 mod tests {
-    use super::{parse_num, TakeValue::*};
+    use super::{count_lines_bytes, parse_num, TakeValue::*};
     use pretty_assertions::assert_eq;
 
-    // #[test]
-    // fn test_count_lines_bytes() {
-    //     let res = count_lines_bytes("tests/inputs/one.txt");
-    //     assert!(res.is_ok());
-    //     let (lines, bytes) = res.unwrap();
-    //     assert_eq!(lines, 1);
-    //     assert_eq!(bytes, 24);
+    #[test]
+    fn test_count_lines_bytes() {
+        let res = count_lines_bytes("tests/inputs/one.txt");
+        assert!(res.is_ok());
+        let (lines, bytes) = res.unwrap();
+        assert_eq!(lines, 1);
+        assert_eq!(bytes, 24);
 
-    //     let res = count_lines_bytes("tests/inputs/twelve.txt");
-    //     assert!(res.is_ok());
-    //     let (lines, bytes) = res.unwrap();
-    //     assert_eq!(lines, 12);
-    //     assert_eq!(bytes, 63);
-    // }
+        let res = count_lines_bytes("tests/inputs/twelve.txt");
+        assert!(res.is_ok());
+        let (lines, bytes) = res.unwrap();
+        assert_eq!(lines, 12);
+        assert_eq!(bytes, 63);
+    }
 
     // #[test]
     // fn test_get_start_index() {
