@@ -117,6 +117,14 @@ fn get_start_index(take_value: &TakeValue, total_lines: i64) -> Option<u64> {
     unimplemented!()
 }
 
+fn print_bytes<T: Read + Seek>(
+    mut file: T,
+    num_bytes: &TakeValue,
+    total_bytes: i64,
+) -> MyResult<()> {
+    unimplemented!()
+}
+
 fn print_lines(mut file: impl BufRead, num_lines: &TakeValue, total_lines: i64) -> MyResult<()> {
     unimplemented!()
 }
