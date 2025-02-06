@@ -1,6 +1,7 @@
-use chrono::NaiveDate;
+use chrono::{Datelike, Local, NaiveDate};
 use clap::{Arg, Command};
 use std::error::Error;
+use std::str::FromStr;
 
 #[derive(Debug)]
 pub struct Config {
@@ -18,11 +19,17 @@ pub fn get_args() -> MyResult<Config> {
         .about("Rust cal")
         .get_matches();
 
+    let today = Local::today();
+
     Ok(Config {
         month: None,
-        year: 12,
-        today: NaiveDate::from_ymd(2021, 1, 1),
+        year: today.year(),
+        today: today.naive_local(),
     })
+}
+
+fn parse_int<T: FromStr>(val: &str) -> MyResult<T> {
+    unimplemented!();
 }
 
 pub fn run(config: Config) -> MyResult<()> {
