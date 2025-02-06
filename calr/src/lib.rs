@@ -24,3 +24,8 @@ pub fn get_args() -> MyResult<Config> {
         today: NaiveDate::from_ymd(2021, 1, 1),
     })
 }
+
+pub fn run(config: Config) -> MyResult<()> {
+    println!("{:#?}", config);
+    Ok(())
+}
