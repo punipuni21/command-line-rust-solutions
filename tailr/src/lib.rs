@@ -138,7 +138,15 @@ fn print_bytes<T>(mut file: T, num_bytes: &TakeValue, total_bytes: i64) -> MyRes
 where
     T: Read + Seek,
 {
-    unimplemented!()
+    if let Some(start) = get_start_index(num_bytes, total_bytes) {
+        file.seek(SeekFrom::Start(start))?;
+        let mut buffer = Vec::new();
+        file.read_to_end(&mut buffer)?;
+        if !buffer.is_empty() {
+            print!("{}", String::from_utf8_lossy(&buffer));
+        }
+    }
+    Ok(())
 }
 
 fn print_lines(mut file: impl BufRead, num_lines: &TakeValue, total_lines: i64) -> MyResult<()> {
@@ -185,7 +193,11 @@ pub fn run(config: Config) -> MyResult<()> {
             Ok(file) => {
                 let (total_lines, total_bytes) = count_lines_bytes(filename)?;
                 let file = BufReader::new(file);
-                print_lines(file, &config.lines, total_lines)?;
+                if let Some(num_bytes) = &config.bytes {
+                    print_bytes(file, num_bytes, total_bytes)?;
+                } else {
+                    print_lines(file, &config.lines, total_lines)?;
+                }
             }
         }
     }
