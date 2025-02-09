@@ -107,7 +107,7 @@ fn parse_month(month: &str) -> MyResult<u32> {
                 .enumerate()
                 .filter_map(|(i, name)| {
                     if name.to_lowercase().starts_with(lower) {
-                        Some(i)
+                        Some(i + 1)
                     } else {
                         None
                     }
@@ -124,7 +124,7 @@ fn parse_month(month: &str) -> MyResult<u32> {
 
 fn parse_int<T: FromStr>(val: &str) -> MyResult<T> {
     val.parse()
-        .map_err(|_| format!("Inalid integer \"{}\"", val).into())
+        .map_err(|_| format!("Invalid integer \"{}\"", val).into())
 }
 
 pub fn run(config: Config) -> MyResult<()> {
