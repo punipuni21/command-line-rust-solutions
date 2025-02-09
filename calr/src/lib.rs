@@ -1,6 +1,5 @@
 use chrono::{Datelike, Local, NaiveDate};
 use clap::{Arg, Command};
-use core::num;
 use std::error::Error;
 use std::str::FromStr;
 
@@ -33,13 +32,48 @@ pub fn get_args() -> MyResult<Config> {
         .version("0.1.0")
         .author("ryo")
         .about("Rust cal")
+        .arg(
+            Arg::new("month")
+                .short('m')
+                .help("Month name or number (1-12)")
+                .value_name("MONTH"),
+        )
+        .arg(
+            Arg::new("show_current_year")
+                .value_name("SHOW_YEAR")
+                .short('y')
+                .long("year")
+                .help("Show whole current year")
+                .conflicts_with_all(&["month", "year"]), // .num_args(0..)
+        )
+        .arg(Arg::new("year").help("Year (1-9999)").value_name("YEAR"))
         .get_matches();
 
     let today = Local::today();
 
+    let mut month = matches
+        .get_one::<String>("month")
+        .map(String::as_str)
+        .map(parse_month)
+        .transpose()?;
+
+    let mut year = matches
+        .get_one::<String>("year")
+        .map(String::as_str)
+        .map(parse_year)
+        .transpose()?;
+
+    if matches.get_flag("show_current_year") {
+        month = None;
+        year = Some(today.year());
+    } else if month.is_none() && year.is_none() {
+        month = Some(today.month());
+        year = Some(today.year());
+    }
+
     Ok(Config {
-        month: None,
-        year: today.year(),
+        month,
+        year: year.unwrap_or_else(|| today.year()),
         today: today.naive_local(),
     })
 }
