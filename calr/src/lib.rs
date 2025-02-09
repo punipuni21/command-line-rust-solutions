@@ -36,7 +36,8 @@ pub fn get_args() -> MyResult<Config> {
             Arg::new("month")
                 .short('m')
                 .help("Month name or number (1-12)")
-                .value_name("MONTH"),
+                .value_name("MONTH")
+                .num_args(1),
         )
         .arg(
             Arg::new("show_current_year")
@@ -44,7 +45,9 @@ pub fn get_args() -> MyResult<Config> {
                 .short('y')
                 .long("year")
                 .help("Show whole current year")
-                .conflicts_with_all(&["month", "year"]), // .num_args(0..)
+                .conflicts_with_all(&["month", "year"])
+                .default_value("false")
+                .num_args(0),
         )
         .arg(Arg::new("year").help("Year (1-9999)").value_name("YEAR"))
         .get_matches();
