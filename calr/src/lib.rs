@@ -1,5 +1,6 @@
 use chrono::{Datelike, Local, NaiveDate};
 use clap::{Arg, Command};
+use core::num;
 use std::error::Error;
 use std::str::FromStr;
 
@@ -9,6 +10,21 @@ pub struct Config {
     year: i32,
     today: NaiveDate,
 }
+
+const MONTH_NAMES: [&str; 12] = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+];
 
 type MyResult<T> = Result<T, Box<dyn Error>>;
 
@@ -29,15 +45,49 @@ pub fn get_args() -> MyResult<Config> {
 }
 
 fn parse_year(year: &str) -> MyResult<i32> {
-    unimplemented!();
+    parse_int(year).and_then(|num| {
+        if (1..=9999).contains(&num) {
+            Ok(num)
+        } else {
+            Err(format!("year \"{}\" not in the range 1 through 9999", year).into())
+        }
+    })
 }
 
 fn parse_month(month: &str) -> MyResult<u32> {
-    unimplemented!();
+    match parse_int(month) {
+        Ok(num) => {
+            if (1..=12).contains(&num) {
+                Ok(num)
+            } else {
+                Err(format!("month \"{}\" not in the range 1 through 12", month).into())
+            }
+        }
+        _ => {
+            let lower = &month.to_lowercase();
+            let matches: Vec<_> = MONTH_NAMES
+                .iter()
+                .enumerate()
+                .filter_map(|(i, name)| {
+                    if name.to_lowercase().starts_with(lower) {
+                        Some(i)
+                    } else {
+                        None
+                    }
+                })
+                .collect();
+            if matches.len() == 1 {
+                Ok(matches[0] as u32)
+            } else {
+                Err(format!("Invalid month \"{}\"", month).into())
+            }
+        }
+    }
 }
 
 fn parse_int<T: FromStr>(val: &str) -> MyResult<T> {
-    unimplemented!();
+    val.parse()
+        .map_err(|_| format!("Inalid integer \"{}\"", val).into())
 }
 
 pub fn run(config: Config) -> MyResult<()> {
