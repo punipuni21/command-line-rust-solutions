@@ -131,6 +131,10 @@ fn format_month(yead: i32, month: u32, print_year: bool, today: NaiveDate) -> Ve
     unimplemented!()
 }
 
+fn last_day_in_month(year: i32, month: u32) -> NaiveDate {
+    unimplemented!()
+}
+
 pub fn run(config: Config) -> MyResult<()> {
     println!("{:#?}", config);
     Ok(())
@@ -139,7 +143,7 @@ pub fn run(config: Config) -> MyResult<()> {
 // --------------------------------------------------
 #[cfg(test)]
 mod tests {
-    use super::{format_month, parse_int, parse_month, parse_year};
+    use super::{format_month, last_day_in_month, parse_int, parse_month, parse_year};
     use chrono::NaiveDate;
     #[test]
     fn test_parse_int() {
@@ -245,10 +249,10 @@ mod tests {
         let today = NaiveDate::from_ymd(2021, 4, 7);
         assert_eq!(format_month(2021, 4, true, today), april_hl);
     }
-    // #[test]
-    // fn test_last_day_in_month() {
-    //     assert_eq!(last_day_in_month(2020, 1), NaiveDate::from_ymd(2020, 1, 31));
-    //     assert_eq!(last_day_in_month(2020, 2), NaiveDate::from_ymd(2020, 2, 29));
-    //     assert_eq!(last_day_in_month(2020, 4), NaiveDate::from_ymd(2020, 4, 30));
-    // }
+    #[test]
+    fn test_last_day_in_month() {
+        assert_eq!(last_day_in_month(2020, 1), NaiveDate::from_ymd(2020, 1, 31));
+        assert_eq!(last_day_in_month(2020, 2), NaiveDate::from_ymd(2020, 2, 29));
+        assert_eq!(last_day_in_month(2020, 4), NaiveDate::from_ymd(2020, 4, 30));
+    }
 }
