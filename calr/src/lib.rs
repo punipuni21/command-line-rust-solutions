@@ -185,7 +185,29 @@ fn last_day_in_month(year: i32, month: u32) -> NaiveDate {
 }
 
 pub fn run(config: Config) -> MyResult<()> {
-    println!("{:#?}", config);
+    match config.month {
+        Some(month) => {
+            let lines = format_month(config.year, month, true, config.today);
+            println!("{}", lines.join("\n"));
+        }
+        None => {
+            println!("{:>32}", config.year);
+            let months: Vec<_> = (1..=12)
+                .into_iter()
+                .map(|month| format_month(config.year, month, false, config.today))
+                .collect();
+            for (i, chunk) in months.chunks(3).enumerate() {
+                if let [m1, m2, m3] = chunk {
+                    for lines in izip!(m1, m2, m3) {
+                        println!("{}{}{}", lines.0, lines.1, lines.2);
+                    }
+                    if i < 3 {
+                        println!();
+                    }
+                }
+            }
+        }
+    }
     Ok(())
 }
 
