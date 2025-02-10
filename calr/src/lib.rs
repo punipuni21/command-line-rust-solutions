@@ -131,8 +131,48 @@ fn parse_int<T: FromStr>(val: &str) -> MyResult<T> {
         .map_err(|_| format!("Invalid integer \"{}\"", val).into())
 }
 
-fn format_month(yead: i32, month: u32, print_year: bool, today: NaiveDate) -> Vec<String> {
-    unimplemented!()
+fn format_month(year: i32, month: u32, print_year: bool, today: NaiveDate) -> Vec<String> {
+    let first = NaiveDate::from_ymd(year, month, 1);
+    let mut days: Vec<String> = (1..first.weekday().num_days_from_sunday())
+        .map(|_| " ".to_string())
+        .collect();
+
+    let is_today = |day: u32| year == today.year() && month == today.month() && day == today.day();
+    let last = last_day_in_month(year, month);
+    days.extend((first.day()..=last.day()).into_iter().map(|num| {
+        let fmt = format!("{:>2}", num);
+        if is_today(num) {
+            Style::new().reverse().paint(fmt).to_string()
+        } else {
+            fmt
+        }
+    }));
+
+    let month_name = MONTH_NAMES[month as usize - 1];
+    let mut lines = Vec::with_capacity(8);
+    lines.push(format!(
+        "{:^20}  ",
+        if print_year {
+            format!("{} {}", month_name, year)
+        } else {
+            month_name.to_string()
+        }
+    ));
+
+    lines.push("Su Mo Tu We Th Fr Sa  ".to_string());
+
+    for week in days.chunks(7) {
+        lines.push(format!(
+            "{:width$}  ",
+            week.join(" "),
+            width = LINE_WITDH - 2
+        ));
+    }
+
+    while lines.len() < 8 {
+        lines.push(" ".repeat(LINE_WITDH).to_string());
+    }
+    lines
 }
 
 fn last_day_in_month(year: i32, month: u32) -> NaiveDate {
