@@ -1,5 +1,7 @@
+use ansi_term::Style;
 use chrono::{Datelike, Local, NaiveDate};
 use clap::{Arg, Command};
+use itertools::izip;
 use std::error::Error;
 use std::str::FromStr;
 
@@ -9,6 +11,8 @@ pub struct Config {
     year: i32,
     today: NaiveDate,
 }
+
+const LINE_WITDH: usize = 22;
 
 const MONTH_NAMES: [&str; 12] = [
     "January",
@@ -132,7 +136,12 @@ fn format_month(yead: i32, month: u32, print_year: bool, today: NaiveDate) -> Ve
 }
 
 fn last_day_in_month(year: i32, month: u32) -> NaiveDate {
-    unimplemented!()
+    let (y, m) = if month == 12 {
+        (year + 1, 1)
+    } else {
+        (year, month + 1)
+    };
+    NaiveDate::from_ymd(y, m, 1).pred()
 }
 
 pub fn run(config: Config) -> MyResult<()> {
