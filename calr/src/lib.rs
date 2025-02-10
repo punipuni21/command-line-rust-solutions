@@ -127,6 +127,10 @@ fn parse_int<T: FromStr>(val: &str) -> MyResult<T> {
         .map_err(|_| format!("Invalid integer \"{}\"", val).into())
 }
 
+fn format_month(yead: i32, month: u32, print_year: bool, today: NaiveDate) -> Vec<String> {
+    unimplemented!()
+}
+
 pub fn run(config: Config) -> MyResult<()> {
     println!("{:#?}", config);
     Ok(())
@@ -135,7 +139,7 @@ pub fn run(config: Config) -> MyResult<()> {
 // --------------------------------------------------
 #[cfg(test)]
 mod tests {
-    use super::{parse_int, parse_month, parse_year};
+    use super::{format_month, parse_int, parse_month, parse_year};
     use chrono::NaiveDate;
     #[test]
     fn test_parse_int() {
@@ -203,44 +207,44 @@ mod tests {
         assert!(res.is_err());
         assert_eq!(res.unwrap_err().to_string(), "Invalid month \"foo\"");
     }
-    // #[test]
-    // fn test_format_month() {
-    //     let today = NaiveDate::from_ymd(0, 1, 1);
-    //     let leap_february = vec![
-    //         "   February 2020      ",
-    //         "Su Mo Tu We Th Fr Sa  ",
-    //         "                   1  ",
-    //         " 2  3  4  5  6  7  8  ",
-    //         " 9 10 11 12 13 14 15  ",
-    //         "16 17 18 19 20 21 22  ",
-    //         "23 24 25 26 27 28 29  ",
-    //         "                      ",
-    //     ];
-    //     assert_eq!(format_month(2020, 2, true, today), leap_february);
-    //     let may = vec![
-    //         "        May           ",
-    //         "Su Mo Tu We Th Fr Sa  ",
-    //         "                1  2  ",
-    //         " 3  4  5  6  7  8  9  ",
-    //         "10 11 12 13 14 15 16  ",
-    //         "17 18 19 20 21 22 23  ",
-    //         "24 25 26 27 28 29 30  ",
-    //         "31                    ",
-    //     ];
-    //     assert_eq!(format_month(2020, 5, false, today), may);
-    //     let april_hl = vec![
-    //         "     April 2021       ",
-    //         "Su Mo Tu We Th Fr Sa  ",
-    //         "             1  2  3  ",
-    //         " 4  5  6 \u{1b}[7m 7\u{1b}[0m  8  9 10  ",
-    //         "11 12 13 14 15 16 17  ",
-    //         "18 19 20 21 22 23 24  ",
-    //         "25 26 27 28 29 30     ",
-    //         "                      ",
-    //     ];
-    //     let today = NaiveDate::from_ymd(2021, 4, 7);
-    //     assert_eq!(format_month(2021, 4, true, today), april_hl);
-    // }
+    #[test]
+    fn test_format_month() {
+        let today = NaiveDate::from_ymd(0, 1, 1);
+        let leap_february = vec![
+            "   February 2020      ",
+            "Su Mo Tu We Th Fr Sa  ",
+            "                   1  ",
+            " 2  3  4  5  6  7  8  ",
+            " 9 10 11 12 13 14 15  ",
+            "16 17 18 19 20 21 22  ",
+            "23 24 25 26 27 28 29  ",
+            "                      ",
+        ];
+        assert_eq!(format_month(2020, 2, true, today), leap_february);
+        let may = vec![
+            "        May           ",
+            "Su Mo Tu We Th Fr Sa  ",
+            "                1  2  ",
+            " 3  4  5  6  7  8  9  ",
+            "10 11 12 13 14 15 16  ",
+            "17 18 19 20 21 22 23  ",
+            "24 25 26 27 28 29 30  ",
+            "31                    ",
+        ];
+        assert_eq!(format_month(2020, 5, false, today), may);
+        let april_hl = vec![
+            "     April 2021       ",
+            "Su Mo Tu We Th Fr Sa  ",
+            "             1  2  3  ",
+            " 4  5  6 \u{1b}[7m 7\u{1b}[0m  8  9 10  ",
+            "11 12 13 14 15 16 17  ",
+            "18 19 20 21 22 23 24  ",
+            "25 26 27 28 29 30     ",
+            "                      ",
+        ];
+        let today = NaiveDate::from_ymd(2021, 4, 7);
+        assert_eq!(format_month(2021, 4, true, today), april_hl);
+    }
     // #[test]
     // fn test_last_day_in_month() {
     //     assert_eq!(last_day_in_month(2020, 1), NaiveDate::from_ymd(2020, 1, 31));
