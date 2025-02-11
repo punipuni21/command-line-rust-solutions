@@ -93,7 +93,7 @@ pub fn run(config: Config) -> MyResult<()> {
 // --------------------------------------------------
 #[cfg(test)]
 mod test {
-    use super::find_files;
+    use super::{find_files, format_mode};
     use pretty_assertions::assert_eq;
     use std::path::PathBuf;
 
@@ -172,26 +172,26 @@ mod test {
         );
     }
 
-    // fn long_match(
-    //     line: &str,
-    //     expected_name: &str,
-    //     expected_perms: &str,
-    //     expected_size: Option<&str>,
-    // ) {
-    //     let parts: Vec<_> = line.split_whitespace().collect();
-    //     assert!(!parts.is_empty() && parts.len() <= 10);
+    fn long_match(
+        line: &str,
+        expected_name: &str,
+        expected_perms: &str,
+        expected_size: Option<&str>,
+    ) {
+        let parts: Vec<_> = line.split_whitespace().collect();
+        assert!(!parts.is_empty() && parts.len() <= 10);
 
-    //     let perms = parts.first().unwrap();
-    //     assert_eq!(perms, &expected_perms);
+        let perms = parts.first().unwrap();
+        assert_eq!(perms, &expected_perms);
 
-    //     if let Some(size) = expected_size {
-    //         let file_size = parts.get(4).unwrap();
-    //         assert_eq!(file_size, &size);
-    //     }
+        if let Some(size) = expected_size {
+            let file_size = parts.get(4).unwrap();
+            assert_eq!(file_size, &size);
+        }
 
-    //     let display_name = parts.last().unwrap();
-    //     assert_eq!(display_name, &expected_name);
-    // }
+        let display_name = parts.last().unwrap();
+        assert_eq!(display_name, &expected_name);
+    }
 
     // #[test]
     // fn test_format_output_one() {
@@ -242,9 +242,9 @@ mod test {
     //     assert_eq!(mk_triple(0o600, Owner::Other), "---");
     // }
 
-    // #[test]
-    // fn test_format_mode() {
-    //     assert_eq!(format_mode(0o755), "rwxr-xr-x");
-    //     assert_eq!(format_mode(0o421), "r---w---x");
-    // }
+    #[test]
+    fn test_format_mode() {
+        assert_eq!(format_mode(0o755), "rwxr-xr-x");
+        assert_eq!(format_mode(0o421), "r---w---x");
+    }
 }
