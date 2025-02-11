@@ -78,6 +78,10 @@ fn format_output(paths: &[PathBuf]) -> MyResult<String> {
     Ok(format!("{}", table))
 }
 
+fn format_mode(mode: u32) -> String {
+    unimplemented!()
+}
+
 pub fn run(config: Config) -> MyResult<()> {
     let paths = find_files(&config.paths, config.show_hidden)?;
     for path in paths {
