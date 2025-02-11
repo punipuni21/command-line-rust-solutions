@@ -1,5 +1,6 @@
 use clap::{Arg, Command};
 use std::{error::Error, path::PathBuf};
+use tabular::{Row, Table};
 
 type MyResult<T> = Result<T, Box<dyn Error>>;
 
@@ -55,6 +56,26 @@ pub fn get_args() -> MyResult<Config> {
 
 fn find_files(paths: &[String], show_hidden: bool) -> MyResult<Vec<PathBuf>> {
     unimplemented!()
+}
+
+fn format_output(paths: &[PathBuf]) -> MyResult<String> {
+    let fmt = "{:<}{:<}  {:>}  {:<}  {:<}  {:>}  {:<}  {:<}";
+    let mut table = Table::new(fmt);
+
+    for path in paths {
+        table.add_row(
+            Row::new()
+                .with_cell("")
+                .with_cell("")
+                .with_cell("")
+                .with_cell("")
+                .with_cell("")
+                .with_cell("")
+                .with_cell("")
+                .with_cell(""),
+        );
+    }
+    Ok(format!("{}", table))
 }
 
 pub fn run(config: Config) -> MyResult<()> {
