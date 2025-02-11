@@ -58,7 +58,10 @@ fn find_files(paths: &[String], show_hidden: bool) -> MyResult<Vec<PathBuf>> {
 }
 
 pub fn run(config: Config) -> MyResult<()> {
-    println!("{:?}", config);
+    let paths = find_files(&config.paths, config.show_hidden)?;
+    for path in paths {
+        println!("{}", path.display());
+    }
     Ok(())
 }
 
