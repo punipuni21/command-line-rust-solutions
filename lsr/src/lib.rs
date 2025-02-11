@@ -121,28 +121,28 @@ mod test {
         );
     }
 
-    // #[test]
-    // fn test_find_files_hidden() {
-    //     // Find all entries in a directory including hidden
-    //     let res = find_files(&["tests/inputs".to_string()], true);
-    //     assert!(res.is_ok());
-    //     let mut filenames: Vec<_> = res
-    //         .unwrap()
-    //         .iter()
-    //         .map(|entry| entry.display().to_string())
-    //         .collect();
-    //     filenames.sort();
-    //     assert_eq!(
-    //         filenames,
-    //         [
-    //             "tests/inputs/.hidden",
-    //             "tests/inputs/bustle.txt",
-    //             "tests/inputs/dir",
-    //             "tests/inputs/empty.txt",
-    //             "tests/inputs/fox.txt",
-    //         ]
-    //     );
-    // }
+    #[test]
+    fn test_find_files_hidden() {
+        // Find all entries in a directory including hidden
+        let res = find_files(&["tests/inputs".to_string()], true);
+        assert!(res.is_ok());
+        let mut filenames: Vec<_> = res
+            .unwrap()
+            .iter()
+            .map(|entry| entry.display().to_string())
+            .collect();
+        filenames.sort();
+        assert_eq!(
+            filenames,
+            [
+                "tests/inputs/.hidden",
+                "tests/inputs/bustle.txt",
+                "tests/inputs/dir",
+                "tests/inputs/empty.txt",
+                "tests/inputs/fox.txt",
+            ]
+        );
+    }
 
     // fn long_match(
     //     line: &str,
