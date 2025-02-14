@@ -1,4 +1,6 @@
+mod owner;
 use clap::{Arg, Command};
+use owner::Owner;
 use std::fs;
 use std::{error::Error, path::PathBuf};
 use tabular::{Row, Table};
