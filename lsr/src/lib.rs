@@ -1,4 +1,5 @@
 use clap::{Arg, Command};
+use std::fs;
 use std::{error::Error, path::PathBuf};
 use tabular::{Row, Table};
 
@@ -55,7 +56,29 @@ pub fn get_args() -> MyResult<Config> {
 }
 
 fn find_files(paths: &[String], show_hidden: bool) -> MyResult<Vec<PathBuf>> {
-    unimplemented!()
+    let mut results = vec![];
+    for name in paths {
+        match fs::metadata(name) {
+            Err(e) => eprintln!("{}: {}", name, e),
+            Ok(meta) => {
+                if meta.is_dir() {
+                    for entry in fs::read_dir(name)? {
+                        let entry = entry?;
+                        let path = entry.path();
+                        let is_hidden = path.file_name().map_or(false, |file_name| {
+                            file_name.to_string_lossy().starts_with('.')
+                        });
+                        if !is_hidden || show_hidden {
+                            results.push(entry.path());
+                        }
+                    }
+                } else {
+                    results.push(PathBuf::from(name));
+                }
+            }
+        }
+    }
+    Ok(results)
 }
 
 fn format_output(paths: &[PathBuf]) -> MyResult<String> {
