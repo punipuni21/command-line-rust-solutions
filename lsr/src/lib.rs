@@ -1,4 +1,5 @@
 mod owner;
+use chrono::{DateTime, Local};
 use clap::{Arg, Command};
 use owner::Owner;
 use std::{error::Error, path::PathBuf};
@@ -89,16 +90,31 @@ fn format_output(paths: &[PathBuf]) -> MyResult<String> {
     let mut table = Table::new(fmt);
 
     for path in paths {
+        let metadata = path.metadata()?;
+
+        let uid = metadata.uid();
+        let user = get_user_by_uid(uid)
+            .map(|u| u.name().to_string_lossy().into_owned())
+            .unwrap_or_else(|| uid.to_string());
+        let gid = metadata.gid();
+        let group = get_group_by_gid(gid)
+            .map(|g| g.name().to_string_lossy().into_owned())
+            .unwrap_or_else(|| gid.to_string());
+
+        let file_type = if path.is_dir() { "d" } else { "-" };
+        let perms = format_mode(metadata.mode());
+        let modified: DateTime<Local> = DateTime::from(metadata.modified()?);
+
         table.add_row(
             Row::new()
-                .with_cell("")
-                .with_cell("")
-                .with_cell("")
-                .with_cell("")
-                .with_cell("")
-                .with_cell("")
-                .with_cell("")
-                .with_cell(""),
+                .with_cell(file_type)
+                .with_cell(perms)
+                .with_cell(metadata.nlink())
+                .with_cell(user)
+                .with_cell(group)
+                .with_cell(metadata.len())
+                .with_cell(modified.format("%b %d %y %H:%M"))
+                .with_cell(path.display()),
         );
     }
     Ok(format!("{}", table))
