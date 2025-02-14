@@ -152,8 +152,12 @@ pub fn mk_triple(mode: u32, owner: Owner) -> String {
 
 pub fn run(config: Config) -> MyResult<()> {
     let paths = find_files(&config.paths, config.show_hidden)?;
-    for path in paths {
-        println!("{}", path.display());
+    if config.long {
+        println!("{}", format_output(&paths)?);
+    } else {
+        for path in paths {
+            println!("{}", path.display());
+        }
     }
     Ok(())
 }
