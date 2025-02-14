@@ -121,23 +121,12 @@ fn format_output(paths: &[PathBuf]) -> MyResult<String> {
 }
 
 fn format_mode(mode: u32) -> String {
-    unimplemented!()
-}
-
-fn long_match(line: &str, expected_name: &str, expected_perms: &str, expected_size: Option<&str>) {
-    let parts: Vec<_> = line.split_whitespace().collect();
-    assert!(parts.len() > 0 && parts.len() <= 10);
-
-    let perms = parts.get(0).unwrap();
-    assert_eq!(perms, &expected_perms);
-
-    if let Some(size) = expected_size {
-        let file_size = parts.get(4).unwrap();
-        assert_eq!(file_size, &size);
-    }
-
-    let display_name = parts.last().unwrap();
-    assert_eq!(display_name, &expected_name);
+    format!(
+        "{}{}{}",
+        mk_triple(mode, Owner::User),
+        mk_triple(mode, Owner::Group),
+        mk_triple(mode, Owner::Other),
+    )
 }
 
 pub fn mk_triple(mode: u32, owner: Owner) -> String {
