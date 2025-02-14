@@ -1,9 +1,10 @@
 mod owner;
 use clap::{Arg, Command};
 use owner::Owner;
-use std::fs;
 use std::{error::Error, path::PathBuf};
+use std::{fs, os::unix::fs::MetadataExt};
 use tabular::{Row, Table};
+use users::{get_group_by_gid, get_user_by_uid};
 
 type MyResult<T> = Result<T, Box<dyn Error>>;
 
@@ -123,6 +124,16 @@ fn long_match(line: &str, expected_name: &str, expected_perms: &str, expected_si
     assert_eq!(display_name, &expected_name);
 }
 
+pub fn mk_triple(mode: u32, owner: Owner) -> String {
+    let [read, write, execute] = owner.masks();
+    format!(
+        "{}{}{}",
+        if mode & read == 0 { "-" } else { "r" },
+        if mode & write == 0 { "-" } else { "w" },
+        if mode & execute == 0 { "-" } else { "x" }
+    )
+}
+
 pub fn run(config: Config) -> MyResult<()> {
     let paths = find_files(&config.paths, config.show_hidden)?;
     for path in paths {
@@ -134,7 +145,7 @@ pub fn run(config: Config) -> MyResult<()> {
 // --------------------------------------------------
 #[cfg(test)]
 mod test {
-    use super::{find_files, format_mode, format_output};
+    use super::{find_files, format_mode, format_output, mk_triple};
     use pretty_assertions::assert_eq;
     use std::path::PathBuf;
 
@@ -275,13 +286,13 @@ mod test {
         long_match(dir_line, "tests/inputs/dir", "drwxr-xr-x", None);
     }
 
-    // #[test]
-    // fn test_mk_triple() {
-    //     assert_eq!(mk_triple(0o751, Owner::User), "rwx");
-    //     assert_eq!(mk_triple(0o751, Owner::Group), "r-x");
-    //     assert_eq!(mk_triple(0o751, Owner::Other), "--x");
-    //     assert_eq!(mk_triple(0o600, Owner::Other), "---");
-    // }
+    #[test]
+    fn test_mk_triple() {
+        assert_eq!(mk_triple(0o751, Owner::User), "rwx");
+        assert_eq!(mk_triple(0o751, Owner::Group), "r-x");
+        assert_eq!(mk_triple(0o751, Owner::Other), "--x");
+        assert_eq!(mk_triple(0o600, Owner::Other), "---");
+    }
 
     #[test]
     fn test_format_mode() {
