@@ -145,7 +145,7 @@ pub fn run(config: Config) -> MyResult<()> {
 // --------------------------------------------------
 #[cfg(test)]
 mod test {
-    use super::{find_files, format_mode, format_output, mk_triple};
+    use super::{find_files, format_mode, format_output, mk_triple, Owner};
     use pretty_assertions::assert_eq;
     use std::path::PathBuf;
 
