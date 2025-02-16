@@ -10,8 +10,10 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - name: Run test
-      run: ls -l
+    - name: Checkout Crate
+      uses: actions/checkout@v4
+    - name: Set Toolchain
+      uses: dtolnay/rust-toolchain@stable
     - name: Run test
       run: cargo test
     
