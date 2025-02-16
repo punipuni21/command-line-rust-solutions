@@ -11,5 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Run test
+      run: ls -l
+    - name: Run test
       run: cargo test
     
