@@ -47,21 +47,21 @@ pub fn get_args() -> MyResult<Config> {
             Arg::new("suppress_col1")
                 .short('1')
                 .help("Suppress printing of column 1")
-                .default_value("true")
+                .default_value("false")
                 .num_args(0),
         )
         .arg(
             Arg::new("suppress_col2")
                 .short('2')
                 .help("Suppress printing of column 2")
-                .default_value("true")
+                .default_value("false")
                 .num_args(0),
         )
         .arg(
             Arg::new("suppress_col3")
                 .short('3')
                 .help("Suppress printing of column 3")
-                .default_value("true")
+                .default_value("false")
                 .num_args(0),
         )
         .arg(
@@ -121,6 +121,9 @@ pub fn run(config: Config) -> MyResult<()> {
         }
     };
 
+    let mut lines1 = open(file1)?.lines().filter_map(Result::ok).map(case);
+    let mut lines2 = open(file2)?.lines().filter_map(Result::ok).map(case);
+
     let print = |col: Column| {
         let mut columns = vec![];
         match col {
@@ -153,9 +156,6 @@ pub fn run(config: Config) -> MyResult<()> {
             println!("{}", columns.join(&config.delimiter));
         }
     };
-
-    let mut lines1 = open(file1)?.lines().filter_map(Result::ok).map(case);
-    let mut lines2 = open(file2)?.lines().filter_map(Result::ok).map(case);
 
     let mut line1 = lines1.next();
     let mut line2 = lines2.next();
