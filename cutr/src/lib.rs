@@ -30,7 +30,7 @@ pub struct Config {
 pub fn run(config: Config) -> MyResult<()> {
     for filename in &config.files {
         match open(filename) {
-            Err(err) => eprintln!("{}:{}", filename, err),
+            Err(err) => println!("{}:{}", filename, err),
             Ok(file) => match &config.extract {
                 Fields(field_pos) => {
                     let mut reader = ReaderBuilder::new()
@@ -63,6 +63,7 @@ pub fn run(config: Config) -> MyResult<()> {
 }
 
 fn open(filename: &str) -> MyResult<Box<dyn BufRead>> {
+    println!("{}", filename);
     match filename {
         "-" => Ok(Box::new(BufReader::new(io::stdin()))),
         _ => Ok(Box::new(BufReader::new(File::open(filename)?))),
@@ -110,8 +111,7 @@ pub fn get_args() -> MyResult<Config> {
                 .short('b')
                 .long("bytes")
                 .help("Selected bytes")
-                .conflicts_with_all(&["fields", "chars"])
-                .num_args(0..),
+                .conflicts_with_all(&["fields", "chars"]), // .num_args(0),
         )
         .arg(
             Arg::new("chars")
@@ -119,8 +119,7 @@ pub fn get_args() -> MyResult<Config> {
                 .short('c')
                 .long("chars")
                 .help("Selected characters")
-                .conflicts_with_all(&["fields", "bytes"])
-                .num_args(0..),
+                .conflicts_with_all(&["fields", "bytes"]), // .num_args(0),
         )
         .arg(
             Arg::new("delimiter")
@@ -128,8 +127,7 @@ pub fn get_args() -> MyResult<Config> {
                 .short('d')
                 .long("delim")
                 .help("Field delimiter")
-                .default_value("\t")
-                .num_args(0..=1),
+                .default_value("\t"), // .num_args(0),
         )
         .arg(
             Arg::new("fields")
@@ -137,8 +135,7 @@ pub fn get_args() -> MyResult<Config> {
                 .short('f')
                 .long("fields")
                 .help("Selected fields")
-                .conflicts_with_all(&["bytes", "chars"])
-                .num_args(0..),
+                .conflicts_with_all(&["bytes", "chars"]), // .num_args(0),
         )
         .arg(
             Arg::new("files")
@@ -155,7 +152,7 @@ pub fn get_args() -> MyResult<Config> {
         .map(|s| s.to_string())
         .collect();
 
-    let delimiter = matches.get_one::<String>("delimiter").unwrap();
+    let delimiter = matches.get_one::<String>("delimiter").unwrap().to_string();
     let delim_bytes = delimiter.as_bytes();
     if delim_bytes.len() != 1 {
         return Err(From::from(format!(
