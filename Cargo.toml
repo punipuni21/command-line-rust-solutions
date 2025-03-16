@@ -1,5 +1,5 @@
 [workspace]
 
 members = [
-    "catr",
+    "catr","calr","commr","cutr","echor","findr","headr","lsr","tailr","uniqr","wcr"
 ]
