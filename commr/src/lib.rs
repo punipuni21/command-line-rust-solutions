@@ -173,7 +173,7 @@ pub fn run(config: Config) -> MyResult<()> {
                     line1 = lines1.next();
                 }
                 Greater => {
-                    print(Col2(val1));
+                    print(Col2(val2));
                     line2 = lines2.next();
                 }
             },
