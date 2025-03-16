@@ -14,7 +14,7 @@ fn dies_year_0() -> Result<()> {
         .assert()
         .failure()
         .stderr(predicate::str::contains(
-            "year 0 not in the range 1 through 9999",
+            "year \"0\" not in the range 1 through 9999",
         ));
     Ok(())
 }
@@ -27,8 +27,7 @@ fn dies_year_10000() -> Result<()> {
         .assert()
         .failure()
         .stderr(predicate::str::contains(
-            "error: invalid value \'10000\' \
-                for \'[YEAR]\': 10000 is not in 1..=9999",
+            "year \"10000\" not in the range 1 through 9999",
         ));
     Ok(())
 }
@@ -40,10 +39,7 @@ fn dies_invalid_year() -> Result<()> {
         .arg("foo")
         .assert()
         .failure()
-        .stderr(predicate::str::contains(
-            "error: invalid value \'foo\' for \'[YEAR]\': \
-                invalid digit found in string",
-        ));
+        .stderr(predicate::str::contains("Invalid integer \"foo\""));
     Ok(())
 }
 
