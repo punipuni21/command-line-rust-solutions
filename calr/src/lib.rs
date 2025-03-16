@@ -133,8 +133,8 @@ fn parse_int<T: FromStr>(val: &str) -> MyResult<T> {
 
 fn format_month(year: i32, month: u32, print_year: bool, today: NaiveDate) -> Vec<String> {
     let first = NaiveDate::from_ymd(year, month, 1);
-    let mut days: Vec<String> = (1..first.weekday().num_days_from_sunday())
-        .map(|_| " ".to_string())
+    let mut days: Vec<String> = (1..first.weekday().number_from_sunday())
+        .map(|_| "  ".to_string())
         .collect();
 
     let is_today = |day: u32| year == today.year() && month == today.month() && day == today.day();
