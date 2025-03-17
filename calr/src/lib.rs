@@ -49,14 +49,14 @@ pub fn get_args() -> MyResult<Config> {
                 .short('y')
                 .long("year")
                 .help("Show whole current year")
-                .conflicts_with_all(&["month", "year"])
+                .conflicts_with_all(["month", "year"])
                 .default_value("false")
                 .num_args(0),
         )
         .arg(Arg::new("year").help("Year (1-9999)").value_name("YEAR"))
         .get_matches();
 
-    let today = Local::today();
+    let today = Local::now();
 
     let mut month = matches
         .get_one::<String>("month")
@@ -81,7 +81,7 @@ pub fn get_args() -> MyResult<Config> {
     Ok(Config {
         month,
         year: year.unwrap_or_else(|| today.year()),
-        today: today.naive_local(),
+        today: today.naive_local().into(),
     })
 }
 
@@ -132,14 +132,14 @@ fn parse_int<T: FromStr>(val: &str) -> MyResult<T> {
 }
 
 fn format_month(year: i32, month: u32, print_year: bool, today: NaiveDate) -> Vec<String> {
-    let first = NaiveDate::from_ymd(year, month, 1);
+    let first = NaiveDate::from_ymd_opt(year, month, 1).expect("REASON");
     let mut days: Vec<String> = (1..first.weekday().number_from_sunday())
         .map(|_| "  ".to_string())
         .collect();
 
     let is_today = |day: u32| year == today.year() && month == today.month() && day == today.day();
     let last = last_day_in_month(year, month);
-    days.extend((first.day()..=last.day()).into_iter().map(|num| {
+    days.extend((first.day()..=last.day()).map(|num| {
         let fmt = format!("{:>2}", num);
         if is_today(num) {
             Style::new().reverse().paint(fmt).to_string()
@@ -181,7 +181,10 @@ fn last_day_in_month(year: i32, month: u32) -> NaiveDate {
     } else {
         (year, month + 1)
     };
-    NaiveDate::from_ymd(y, m, 1).pred()
+    NaiveDate::from_ymd_opt(y, m, 1)
+        .expect("REASON")
+        .pred_opt()
+        .expect("REASON")
 }
 
 pub fn run(config: Config) -> MyResult<()> {
@@ -193,7 +196,6 @@ pub fn run(config: Config) -> MyResult<()> {
         None => {
             println!("{:>32}", config.year);
             let months: Vec<_> = (1..=12)
-                .into_iter()
                 .map(|month| format_month(config.year, month, false, config.today))
                 .collect();
             for (i, chunk) in months.chunks(3).enumerate() {
@@ -284,7 +286,7 @@ mod tests {
     }
     #[test]
     fn test_format_month() {
-        let today = NaiveDate::from_ymd(0, 1, 1);
+        let today = NaiveDate::from_ymd_opt(0, 1, 1).expect("REASON");
         let leap_february = vec![
             "   February 2020      ",
             "Su Mo Tu We Th Fr Sa  ",
@@ -317,13 +319,22 @@ mod tests {
             "25 26 27 28 29 30     ",
             "                      ",
         ];
-        let today = NaiveDate::from_ymd(2021, 4, 7);
+        let today = NaiveDate::from_ymd_opt(2021, 4, 7).expect("REASON");
         assert_eq!(format_month(2021, 4, true, today), april_hl);
     }
     #[test]
     fn test_last_day_in_month() {
-        assert_eq!(last_day_in_month(2020, 1), NaiveDate::from_ymd(2020, 1, 31));
-        assert_eq!(last_day_in_month(2020, 2), NaiveDate::from_ymd(2020, 2, 29));
-        assert_eq!(last_day_in_month(2020, 4), NaiveDate::from_ymd(2020, 4, 30));
+        assert_eq!(
+            last_day_in_month(2020, 1),
+            NaiveDate::from_ymd_opt(2020, 1, 31).expect("REASON")
+        );
+        assert_eq!(
+            last_day_in_month(2020, 2),
+            NaiveDate::from_ymd_opt(2020, 2, 29).expect("REASON")
+        );
+        assert_eq!(
+            last_day_in_month(2020, 4),
+            NaiveDate::from_ymd_opt(2020, 4, 30).expect("REASON")
+        );
     }
 }
