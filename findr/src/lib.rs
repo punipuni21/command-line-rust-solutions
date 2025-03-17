@@ -40,7 +40,7 @@ pub fn run(config: Config) -> MyResult<()> {
                 .any(|re| re.is_match(&entry.file_name().to_string_lossy()))
     };
 
-    for path in config.paths {
+    for path in &config.paths {
         let entries = WalkDir::new(path)
             .into_iter()
             .filter_map(|e| match e {
