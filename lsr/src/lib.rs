@@ -53,7 +53,7 @@ pub fn get_args() -> MyResult<Config> {
         .collect();
 
     Ok(Config {
-        paths: paths,
+        paths,
         long: matches.get_flag("long"),
         show_hidden: matches.get_flag("all"),
     })

@@ -6,7 +6,6 @@ use std::{
     error::Error,
     fs::File,
     io::{BufRead, BufReader, Read, Seek, SeekFrom},
-    os::linux::raw::stat,
 };
 
 static NUM_RE: OnceCell<Regex> = OnceCell::new();
