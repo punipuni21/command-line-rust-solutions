@@ -163,8 +163,7 @@ fn atlamal_bytes_lines() -> Result<()> {
 #[test]
 fn atlamal_stdin() -> Result<()> {
     let input = fs::read_to_string(ATLAMAL)?;
-    let expected =
-        fs::read_to_string("tests/expected/atlamal.txt.stdin.out")?;
+    let expected = fs::read_to_string("tests/expected/atlamal.txt.stdin.out")?;
 
     let output = Command::cargo_bin(PRG)?
         .write_stdin(input)

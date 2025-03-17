@@ -1,5 +1,5 @@
 [workspace]
 
 members = [
-    "catr","echor","headr"
+    "catr","echor","headr","wcr"
 ]
