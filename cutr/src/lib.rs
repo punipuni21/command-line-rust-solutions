@@ -111,7 +111,7 @@ pub fn get_args() -> MyResult<Config> {
                 .short('b')
                 .long("bytes")
                 .help("Selected bytes")
-                .conflicts_with_all(&["fields", "chars"]), // .num_args(0),
+                .conflicts_with_all(&["fields", "chars"]),
         )
         .arg(
             Arg::new("chars")
@@ -119,7 +119,7 @@ pub fn get_args() -> MyResult<Config> {
                 .short('c')
                 .long("chars")
                 .help("Selected characters")
-                .conflicts_with_all(&["fields", "bytes"]), // .num_args(0),
+                .conflicts_with_all(&["fields", "bytes"]),
         )
         .arg(
             Arg::new("delimiter")
@@ -127,7 +127,7 @@ pub fn get_args() -> MyResult<Config> {
                 .short('d')
                 .long("delim")
                 .help("Field delimiter")
-                .default_value("\t"), // .num_args(0),
+                .default_value("\t"),
         )
         .arg(
             Arg::new("fields")
@@ -135,14 +135,13 @@ pub fn get_args() -> MyResult<Config> {
                 .short('f')
                 .long("fields")
                 .help("Selected fields")
-                .conflicts_with_all(&["bytes", "chars"]), // .num_args(0),
+                .conflicts_with_all(&["bytes", "chars"]),
         )
         .arg(
             Arg::new("files")
                 .value_name("FILE")
                 .help("Input files")
-                .default_value("-")
-                .num_args(1..),
+                .default_value("-"), // .num_args(1..),
         )
         .get_matches();
 
@@ -196,7 +195,7 @@ pub fn get_args() -> MyResult<Config> {
     })
 }
 
-fn parse_index(input: String) -> Result<usize, String> {
+fn parse_index(input: &str) -> Result<usize, String> {
     let value_error = || format!("illegal list value: \"{}\"", input);
     input
         .starts_with('+')
@@ -215,10 +214,10 @@ fn parse_pos(range: String) -> MyResult<PositionList> {
         .split(',')
         .into_iter()
         .map(|val| {
-            parse_index(val.to_string()).map(|n| n..n + 1).or_else(|e| {
+            parse_index(val).map(|n| n..n + 1).or_else(|e| {
                 range_re.captures(val).ok_or(e).and_then(|captures| {
-                    let n1 = parse_index(captures[1].to_string())?;
-                    let n2 = parse_index(captures[2].to_string())?;
+                    let n1 = parse_index(&captures[1])?;
+                    let n2 = parse_index(&captures[2])?;
                     if n1 >= n2 {
                         return Err(format!(
                             "First number in range ({}) \
