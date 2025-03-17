@@ -53,7 +53,7 @@ pub fn get_args() -> MyResult<Config> {
         .collect();
 
     Ok(Config {
-        paths: paths,
+        paths,
         long: matches.get_flag("long"),
         show_hidden: matches.get_flag("all"),
     })
@@ -69,9 +69,9 @@ fn find_files(paths: &[String], show_hidden: bool) -> MyResult<Vec<PathBuf>> {
                     for entry in fs::read_dir(name)? {
                         let entry = entry?;
                         let path = entry.path();
-                        let is_hidden = path.file_name().map_or(false, |file_name| {
-                            file_name.to_string_lossy().starts_with('.')
-                        });
+                        let is_hidden = path
+                            .file_name()
+                            .is_some_and(|file_name| file_name.to_string_lossy().starts_with('.'));
                         if !is_hidden || show_hidden {
                             results.push(entry.path());
                         }

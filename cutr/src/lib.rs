@@ -30,7 +30,7 @@ pub struct Config {
 pub fn run(config: Config) -> MyResult<()> {
     for filename in &config.files {
         match open(filename) {
-            Err(err) => eprintln!("{}:{}", filename, err),
+            Err(err) => println!("{}:{}", filename, err),
             Ok(file) => match &config.extract {
                 Fields(field_pos) => {
                     let mut reader = ReaderBuilder::new()
@@ -63,6 +63,7 @@ pub fn run(config: Config) -> MyResult<()> {
 }
 
 fn open(filename: &str) -> MyResult<Box<dyn BufRead>> {
+    println!("{}", filename);
     match filename {
         "-" => Ok(Box::new(BufReader::new(io::stdin()))),
         _ => Ok(Box::new(BufReader::new(File::open(filename)?))),
@@ -110,8 +111,7 @@ pub fn get_args() -> MyResult<Config> {
                 .short('b')
                 .long("bytes")
                 .help("Selected bytes")
-                .conflicts_with_all(&["fields", "chars"])
-                .num_args(0..),
+                .conflicts_with_all(&["fields", "chars"]),
         )
         .arg(
             Arg::new("chars")
@@ -119,8 +119,7 @@ pub fn get_args() -> MyResult<Config> {
                 .short('c')
                 .long("chars")
                 .help("Selected characters")
-                .conflicts_with_all(&["fields", "bytes"])
-                .num_args(0..),
+                .conflicts_with_all(&["fields", "bytes"]),
         )
         .arg(
             Arg::new("delimiter")
@@ -128,8 +127,7 @@ pub fn get_args() -> MyResult<Config> {
                 .short('d')
                 .long("delim")
                 .help("Field delimiter")
-                .default_value("\t")
-                .num_args(0..=1),
+                .default_value("\t"),
         )
         .arg(
             Arg::new("fields")
@@ -137,15 +135,13 @@ pub fn get_args() -> MyResult<Config> {
                 .short('f')
                 .long("fields")
                 .help("Selected fields")
-                .conflicts_with_all(&["bytes", "chars"])
-                .num_args(0..),
+                .conflicts_with_all(&["bytes", "chars"]),
         )
         .arg(
             Arg::new("files")
                 .value_name("FILE")
                 .help("Input files")
-                .default_value("-")
-                .num_args(1..),
+                .default_value("-"), // .num_args(1..),
         )
         .get_matches();
 
@@ -155,7 +151,7 @@ pub fn get_args() -> MyResult<Config> {
         .map(|s| s.to_string())
         .collect();
 
-    let delimiter = matches.get_one::<String>("delimiter").unwrap();
+    let delimiter = matches.get_one::<String>("delimiter").unwrap().to_string();
     let delim_bytes = delimiter.as_bytes();
     if delim_bytes.len() != 1 {
         return Err(From::from(format!(
@@ -199,7 +195,7 @@ pub fn get_args() -> MyResult<Config> {
     })
 }
 
-fn parse_index(input: String) -> Result<usize, String> {
+fn parse_index(input: &str) -> Result<usize, String> {
     let value_error = || format!("illegal list value: \"{}\"", input);
     input
         .starts_with('+')
@@ -218,10 +214,10 @@ fn parse_pos(range: String) -> MyResult<PositionList> {
         .split(',')
         .into_iter()
         .map(|val| {
-            parse_index(val.to_string()).map(|n| n..n + 1).or_else(|e| {
+            parse_index(val).map(|n| n..n + 1).or_else(|e| {
                 range_re.captures(val).ok_or(e).and_then(|captures| {
-                    let n1 = parse_index(captures[1].to_string())?;
-                    let n2 = parse_index(captures[2].to_string())?;
+                    let n1 = parse_index(&captures[1])?;
+                    let n2 = parse_index(&captures[2])?;
                     if n1 >= n2 {
                         return Err(format!(
                             "First number in range ({}) \
